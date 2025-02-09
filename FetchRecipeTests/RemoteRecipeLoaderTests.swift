@@ -10,31 +10,43 @@ import Foundation
 
 struct RemoteRecipeLoader {
     let client: HTTPClient
-    func load(from url: URL) {
-        client.requestedURL = url
+    let url: URL
+    
+    func load() {
+        client.data(from: url)
     }
 }
 
-class HTTPClient {
-    var requestedURL: URL?
+protocol HTTPClient {
+    func data(from url: URL)
+}
+
+class HTTPClientSpy: HTTPClient {
+    
+    var lastRequestedURL: URL?
+    
+    func data(from url: URL) {
+        lastRequestedURL = url
+    }
 }
 
 struct FetchRecipeTests {
 
-    @Test func initDoesNotRequestData() {
-        let client = HTTPClient()
-        _ = RemoteRecipeLoader(client: client)
+    @Test func initDoesNotRequestData() throws {
+        let client = HTTPClientSpy()
+        let url = try #require(URL(string:"https://test-url.com"))
+        _ = RemoteRecipeLoader(client: client, url: url)
 
-        #expect(client.requestedURL == nil)
+        #expect(client.lastRequestedURL == nil)
     }
     
     @Test func loadRequestsDataFromURL() throws {
         let url = try #require(URL(string:"https://test-url.com"))
-        let client = HTTPClient()
-        let sut = RemoteRecipeLoader(client: client)
+        let client = HTTPClientSpy()
+        let sut = RemoteRecipeLoader(client: client, url: url)
         
-        sut.load(from: url)
+        sut.load()
         
-        #expect(client.requestedURL == url)
+        #expect(client.lastRequestedURL == url)
     }
 }
