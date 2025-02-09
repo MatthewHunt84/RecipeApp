@@ -6,11 +6,22 @@
 //
 
 import Testing
+import Foundation
+
+struct RemoteRecipeLoader {
+    
+}
+
+class HTTPClient {
+    var requestedURL: URL?
+}
 
 struct FetchRecipeTests {
 
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-    }
+    @Test func initDoesNotRequestData() async throws {
+        let client = HTTPClient()
+        _ = RemoteRecipeLoader()
 
+        #expect(client.requestedURL == nil)
+    }
 }
