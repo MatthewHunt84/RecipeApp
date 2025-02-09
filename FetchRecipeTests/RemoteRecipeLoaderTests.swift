@@ -21,32 +21,37 @@ protocol HTTPClient {
     func data(from url: URL)
 }
 
-class HTTPClientSpy: HTTPClient {
-    
-    var lastRequestedURL: URL?
-    
-    func data(from url: URL) {
-        lastRequestedURL = url
-    }
-}
-
 struct FetchRecipeTests {
 
     @Test func initDoesNotRequestData() throws {
-        let client = HTTPClientSpy()
         let url = try #require(URL(string:"https://test-url.com"))
-        _ = RemoteRecipeLoader(client: client, url: url)
+        let (_, client) = makeSUT(url: url)
 
-        #expect(client.lastRequestedURL == nil)
+        #expect(client.requestedURL == nil)
     }
     
     @Test func loadRequestsDataFromURL() throws {
         let url = try #require(URL(string:"https://test-url.com"))
-        let client = HTTPClientSpy()
-        let sut = RemoteRecipeLoader(client: client, url: url)
-        
+        let (sut, client) = makeSUT(url: url)
         sut.load()
         
-        #expect(client.lastRequestedURL == url)
+        #expect(client.requestedURL == url)
+    }
+    
+    // MARK: - Helpers
+    
+    private func makeSUT(url: URL) -> (sut: RemoteRecipeLoader, client: HTTPClientSpy) {
+        let client = HTTPClientSpy()
+        let sut = RemoteRecipeLoader(client: client, url: url)
+        return (sut, client)
+    }
+    
+    private final class HTTPClientSpy: HTTPClient {
+        
+        var requestedURL: URL?
+        
+        func data(from url: URL) {
+            requestedURL = url
+        }
     }
 }
