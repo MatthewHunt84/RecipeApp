@@ -15,7 +15,7 @@ struct FetchRecipeTests {
         let url = try #require(URL(string:"https://test-url.com"))
         let (_, client) = makeSUT(url: url)
 
-        #expect(client.requestedURL == nil)
+        #expect(client.requestedURLs.isEmpty)
     }
     
     @Test func loadRequestsDataFromURL() throws {
@@ -23,7 +23,18 @@ struct FetchRecipeTests {
         let (sut, client) = makeSUT(url: url)
         sut.load()
         
-        #expect(client.requestedURL == url)
+        #expect(client.requestedURLs.count == 1)
+        #expect(client.requestedURLs.first == url)
+    }
+    
+    @Test func loadTwiceRequestsDataFromURLTwice() throws {
+        let url = try #require(URL(string:"https://test-url.com"))
+        let (sut, client) = makeSUT(url: url)
+        sut.load()
+        sut.load()
+        
+        #expect(client.requestedURLs.count == 2)
+        #expect(client.requestedURLs == [url, url])
     }
     
     // MARK: - Helpers
@@ -36,10 +47,10 @@ struct FetchRecipeTests {
     
     private final class HTTPClientSpy: HTTPClient {
         
-        var requestedURL: URL?
+        var requestedURLs: [URL] = []
         
         func data(from url: URL) {
-            requestedURL = url
+            requestedURLs.append(url)
         }
     }
 }
