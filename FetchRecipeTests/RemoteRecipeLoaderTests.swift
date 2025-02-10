@@ -7,19 +7,7 @@
 
 import Testing
 import Foundation
-
-struct RemoteRecipeLoader {
-    let client: HTTPClient
-    let url: URL
-    
-    func load() {
-        client.data(from: url)
-    }
-}
-
-protocol HTTPClient {
-    func data(from url: URL)
-}
+import FetchRecipe
 
 struct FetchRecipeTests {
 
