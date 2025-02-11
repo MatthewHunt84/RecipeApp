@@ -42,11 +42,12 @@ struct FetchRecipeTests {
     @Test func loadDeliversConnectivityErrorOnClientError() async throws {
         let url = try #require(URL(string: "https://test-url.com"))
         let (sut, client) = makeSUT(url: url)
-        client.error = NSError(domain: "Test", code: 0)
+        client.capturedErrors.append(NSError(domain: "Test", code: 0))
         
         await #expect(throws: RemoteRecipeLoader.Error.connectivity) {
             try await sut.load()
         }
+        #expect(client.capturedErrors.count == 1)
     }
     
     // MARK: - Helpers
@@ -60,11 +61,13 @@ struct FetchRecipeTests {
     private final class HTTPClientSpy: HTTPClient {
         
         var requestedURLs: [URL] = []
-        var error: Error?
+        var capturedErrors: [Error] = []
         
         func data(from url: URL) async throws {
             requestedURLs.append(url)
-            if let error { throw error }
+            if !capturedErrors.isEmpty {
+                throw capturedErrors.last!
+            }
         }
     }
 }
