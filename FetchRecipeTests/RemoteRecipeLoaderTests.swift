@@ -9,6 +9,8 @@ import Testing
 import Foundation
 import FetchRecipe
 
+
+
 struct FetchRecipeTests {
 
     @Test func initDoesNotRequestData() throws {
@@ -18,23 +20,33 @@ struct FetchRecipeTests {
         #expect(client.requestedURLs.isEmpty)
     }
     
-    @Test func loadRequestsDataFromURL() throws {
+    @Test func loadRequestsDataFromURL() async throws {
         let url = try #require(URL(string:"https://test-url.com"))
         let (sut, client) = makeSUT(url: url)
-        sut.load()
+        try await sut.load()
         
         #expect(client.requestedURLs.count == 1)
         #expect(client.requestedURLs.first == url)
     }
     
-    @Test func loadTwiceRequestsDataFromURLTwice() throws {
+    @Test func loadTwiceRequestsDataFromURLTwice() async throws {
         let url = try #require(URL(string:"https://test-url.com"))
         let (sut, client) = makeSUT(url: url)
-        sut.load()
-        sut.load()
+        try await sut.load()
+        try await sut.load()
         
         #expect(client.requestedURLs.count == 2)
         #expect(client.requestedURLs == [url, url])
+    }
+    
+    @Test func loadDeliversConnectivityErrorOnClientError() async throws {
+        let url = try #require(URL(string: "https://test-url.com"))
+        let (sut, client) = makeSUT(url: url)
+        client.error = NSError(domain: "Test", code: 0)
+        
+        await #expect(throws: RemoteRecipeLoader.Error.connectivity) {
+            try await sut.load()
+        }
     }
     
     // MARK: - Helpers
@@ -48,9 +60,11 @@ struct FetchRecipeTests {
     private final class HTTPClientSpy: HTTPClient {
         
         var requestedURLs: [URL] = []
+        var error: Error?
         
-        func data(from url: URL) {
+        func data(from url: URL) async throws {
             requestedURLs.append(url)
+            if let error { throw error }
         }
     }
 }
