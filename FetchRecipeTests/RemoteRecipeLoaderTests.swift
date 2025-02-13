@@ -59,11 +59,12 @@ struct FetchRecipeTests {
         #expect(client.messages.count == 1)
     }
     
-    @Test func loadDeliversErrorOnNon200HTTPResponse() async throws {
+    @Test(arguments: [199, 201, 300, 400, 500])
+    func loadDeliversErrorOnNon200HTTPResponse(statusCode: Int) async throws {
         let url = try #require(URL(string: "https://test-url.com"))
         let (sut, client) = makeSUT(url: url)
         
-        client.complete(withStatusCode: 400)
+        client.complete(withStatusCode: statusCode)
         
         await #expect(throws: RemoteRecipeLoader.Error.invalidStatusCode) {
             try await sut.load()
