@@ -14,14 +14,13 @@ import FetchRecipe
 struct FetchRecipeTests {
 
     @Test func initDoesNotRequestData() throws {
-        let url = try #require(URL(string:"https://test-url.com"))
-        let (_, client) = makeSUT(url: url)
+        let (_, client) = makeSUT()
 
         #expect(client.messages.isEmpty)
     }
     
     @Test func loadRequestsDataFromURL() async throws {
-        let url = try #require(URL(string:"https://test-url.com"))
+        let url = try #require(URL(string:"https://test-specific-url.com"))
         let (sut, client) = makeSUT(url: url)
         
         await #expect(throws: RemoteRecipeLoader.Error.connectivity) {
@@ -48,8 +47,7 @@ struct FetchRecipeTests {
     }
     
     @Test func loadDeliversConnectivityErrorOnClientError() async throws {
-        let url = try #require(URL(string: "https://test-url.com"))
-        let (sut, client) = makeSUT(url: url)
+        let (sut, client) = makeSUT()
         
         client.complete(with: NSError(domain: "Test", code: 0))
         
@@ -61,8 +59,8 @@ struct FetchRecipeTests {
     
     @Test(arguments: [199, 201, 300, 400, 500])
     func loadDeliversErrorOnNon200HTTPResponse(statusCode: Int) async throws {
-        let url = try #require(URL(string: "https://test-url.com"))
-        let (sut, client) = makeSUT(url: url)
+        
+        let (sut, client) = makeSUT()
         
         client.complete(withStatusCode: statusCode)
         
@@ -74,10 +72,14 @@ struct FetchRecipeTests {
     
     // MARK: - Helpers
     
-    private func makeSUT(url: URL) -> (sut: RemoteRecipeLoader, client: HTTPClientSpy) {
+    private func makeSUT(url: URL? = nil) -> (sut: RemoteRecipeLoader, client: HTTPClientSpy) {
         let client = HTTPClientSpy()
-        let sut = RemoteRecipeLoader(client: client, url: url)
+        let sut = RemoteRecipeLoader(client: client, url: url ?? getStubbedURL())
         return (sut, client)
+    }
+    
+    private func getStubbedURL() -> URL {
+        return try! #require(URL(string: "https://test-url.com"))
     }
     
     private final class HTTPClientSpy: HTTPClient {
@@ -119,6 +121,5 @@ struct FetchRecipeTests {
             }
         }
     }
-    
     
 }
