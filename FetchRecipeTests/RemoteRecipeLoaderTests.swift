@@ -23,9 +23,7 @@ struct FetchRecipeTests {
         let url = try #require(URL(string:"https://test-specific-url.com"))
         let (sut, client) = makeSUT(url: url)
         
-        await #expect(throws: RemoteRecipeLoader.Error.connectivity) {
-            try await sut.load()
-        }
+        try await sut.load()
         
         #expect(client.messages.count == 1)
         #expect(client.messages.last?.url == url)
@@ -34,12 +32,10 @@ struct FetchRecipeTests {
     @Test func loadTwiceRequestsDataFromURLTwice() async throws {
         let url = try #require(URL(string:"https://test-url.com"))
         let (sut, client) = makeSUT(url: url)
-        await #expect(throws: RemoteRecipeLoader.Error.connectivity) {
-            try await sut.load()
-        }
-        await #expect(throws: RemoteRecipeLoader.Error.connectivity) {
-            try await sut.load()
-        }
+        
+        try await sut.load()
+        try await sut.load()
+        
         
         #expect(client.messages.count == 2)
         #expect(client.messages.first?.url == url)
@@ -74,11 +70,11 @@ struct FetchRecipeTests {
     
     private func makeSUT(url: URL? = nil) -> (sut: RemoteRecipeLoader, client: HTTPClientSpy) {
         let client = HTTPClientSpy()
-        let sut = RemoteRecipeLoader(client: client, url: url ?? getStubbedURL())
+        let sut = RemoteRecipeLoader(client: client, url: url ?? makeStubbedURL())
         return (sut, client)
     }
     
-    private func getStubbedURL() -> URL {
+    private func makeStubbedURL() -> URL {
         return try! #require(URL(string: "https://test-url.com"))
     }
     
@@ -86,27 +82,21 @@ struct FetchRecipeTests {
         
         var messages: [(url: URL?, response: URLResponse?, error: Error?)] = []
         
-        func data(from url: URL) async throws -> URLResponse? {
+        func data(from url: URL) async throws -> URLResponse {
             let message = getStubbedMessages(for: url)
-            guard message.error == nil else {
-                throw message.error!
+            if let error = message.error {
+                throw error
             }
-            if let response = message.response {
-                return response
-            }
-            return nil
+    
+            return try! #require(message.response)
         }
         
-        func complete(with error: Error, at index: Int = 0) {
+        func complete(with error: Error) {
             messages.append((url: nil, response: nil, error: error))
         }
         
-        func complete(withStatusCode code: Int, at index: Int = 0) {
-            let response = HTTPURLResponse(
-                url: URL(string: "https://test-url.com")!,
-                statusCode: code,
-                httpVersion: nil,
-                headerFields: nil)
+        func complete(withStatusCode code: Int) {
+            let response = stubResponse(withStatusCode: code)
             messages.append((url: nil, response: response, error: nil))
         }
         
@@ -115,10 +105,23 @@ struct FetchRecipeTests {
                 stubbedMessage.url = url
                 return stubbedMessage
             } else {
-                let newMessage: (url: URL?, response: URLResponse?, error: Error?) = (url: url, response: nil, error: nil)
+                let newMessage: (url: URL?, response: URLResponse?, error: Error?) = (
+                    url: url,
+                    response: stubResponse(withStatusCode: 200),
+                    error: nil)
                 messages.append(newMessage)
                 return newMessage
             }
+        }
+        
+        func stubResponse(withStatusCode code: Int) -> HTTPURLResponse {
+            let url = try! #require(URL(string: "https://test-url.com"))
+            return try! #require(
+                HTTPURLResponse(
+                    url: url,
+                    statusCode: code,
+                    httpVersion: nil,
+                    headerFields: nil))
         }
     }
     

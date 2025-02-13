@@ -26,10 +26,7 @@ public struct RemoteRecipeLoader {
     public func load() async throws {
         let response: URLResponse
         do {
-            guard let urlResponse = try await client.data(from: url) else {
-                throw Error.connectivity
-            }
-            response = urlResponse
+            response = try await client.data(from: url) 
         } catch {
             throw Error.connectivity
         }
@@ -43,5 +40,5 @@ public struct RemoteRecipeLoader {
 }
 
 public protocol HTTPClient {
-    func data(from url: URL) async throws -> URLResponse?
+    func data(from url: URL) async throws -> URLResponse
 }
