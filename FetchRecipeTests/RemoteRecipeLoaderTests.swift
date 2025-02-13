@@ -96,23 +96,16 @@ struct FetchRecipeTests {
         }
         
         func complete(with error: Error, at index: Int = 0) {
-            if messages.count <= index  {
-                messages.append((url: nil, response: nil, error: error))
-            } else {
-                messages[index].error = error
-            }
+            messages.append((url: nil, response: nil, error: error))
         }
         
         func complete(withStatusCode code: Int, at index: Int = 0) {
-            if messages.count <= index  {
-                messages.append((url: nil, response: nil, error: nil))
-            }
             let response = HTTPURLResponse(
-                url: messages[index].url ?? URL(string: "https://test-url.com")!,
+                url: URL(string: "https://test-url.com")!,
                 statusCode: code,
                 httpVersion: nil,
                 headerFields: nil)
-            messages[index].response = response
+            messages.append((url: nil, response: response, error: nil))
         }
         
         func getStubbedMessages(for url: URL) -> (url: URL?, response: URLResponse?, error: Error?) {
