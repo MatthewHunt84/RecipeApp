@@ -17,26 +17,34 @@ struct FetchRecipeTests {
         let url = try #require(URL(string:"https://test-url.com"))
         let (_, client) = makeSUT(url: url)
 
-        #expect(client.requestedURLs.isEmpty)
+        #expect(client.messages.isEmpty)
     }
     
     @Test func loadRequestsDataFromURL() async throws {
         let url = try #require(URL(string:"https://test-url.com"))
         let (sut, client) = makeSUT(url: url)
-        try await sut.load()
         
-        #expect(client.requestedURLs.count == 1)
-        #expect(client.requestedURLs.first == url)
+        await #expect(throws: RemoteRecipeLoader.Error.connectivity) {
+            try await sut.load()
+        }
+        
+        #expect(client.messages.count == 1)
+        #expect(client.messages.last?.url == url)
     }
     
     @Test func loadTwiceRequestsDataFromURLTwice() async throws {
         let url = try #require(URL(string:"https://test-url.com"))
         let (sut, client) = makeSUT(url: url)
-        try await sut.load()
-        try await sut.load()
+        await #expect(throws: RemoteRecipeLoader.Error.connectivity) {
+            try await sut.load()
+        }
+        await #expect(throws: RemoteRecipeLoader.Error.connectivity) {
+            try await sut.load()
+        }
         
-        #expect(client.requestedURLs.count == 2)
-        #expect(client.requestedURLs == [url, url])
+        #expect(client.messages.count == 2)
+        #expect(client.messages.first?.url == url)
+        #expect(client.messages.last?.url == url)
     }
     
     @Test func loadDeliversConnectivityErrorOnClientError() async throws {
@@ -48,7 +56,19 @@ struct FetchRecipeTests {
         await #expect(throws: RemoteRecipeLoader.Error.connectivity) {
             try await sut.load()
         }
-        #expect(client.capturedErrors.count == 1)
+        #expect(client.messages.count == 1)
+    }
+    
+    @Test func loadDeliversErrorOnNon200HTTPResponse() async throws {
+        let url = try #require(URL(string: "https://test-url.com"))
+        let (sut, client) = makeSUT(url: url)
+        
+        client.complete(withStatusCode: 400)
+        
+        await #expect(throws: RemoteRecipeLoader.Error.invalidStatusCode) {
+            try await sut.load()
+        }
+        #expect(client.messages.count == 1)
     }
     
     // MARK: - Helpers
@@ -61,18 +81,50 @@ struct FetchRecipeTests {
     
     private final class HTTPClientSpy: HTTPClient {
         
-        var requestedURLs: [URL] = []
-        var capturedErrors: [Error] = []
+        var messages: [(url: URL?, response: URLResponse?, error: Error?)] = []
         
-        func data(from url: URL) async throws {
-            requestedURLs.append(url)
-            if let mostRecentError = capturedErrors.last {
-                throw mostRecentError
+        func data(from url: URL) async throws -> URLResponse? {
+            let message = getStubbedMessages(for: url)
+            guard message.error == nil else {
+                throw message.error!
+            }
+            if let response = message.response {
+                return response
+            }
+            return nil
+        }
+        
+        func complete(with error: Error, at index: Int = 0) {
+            if messages.count <= index  {
+                messages.append((url: nil, response: nil, error: error))
+            } else {
+                messages[index].error = error
             }
         }
         
-        func complete(with error: Error) {
-            capturedErrors.append(error)
+        func complete(withStatusCode code: Int, at index: Int = 0) {
+            if messages.count <= index  {
+                messages.append((url: nil, response: nil, error: nil))
+            }
+            let response = HTTPURLResponse(
+                url: messages[index].url ?? URL(string: "https://test-url.com")!,
+                statusCode: code,
+                httpVersion: nil,
+                headerFields: nil)
+            messages[index].response = response
+        }
+        
+        func getStubbedMessages(for url: URL) -> (url: URL?, response: URLResponse?, error: Error?) {
+            if var stubbedMessage = messages.first(where: { $0.url == nil }) {
+                stubbedMessage.url = url
+                return stubbedMessage
+            } else {
+                let newMessage: (url: URL?, response: URLResponse?, error: Error?) = (url: url, response: nil, error: nil)
+                messages.append(newMessage)
+                return newMessage
+            }
         }
     }
+    
+    
 }
