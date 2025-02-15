@@ -36,7 +36,6 @@ struct FetchRecipeTests {
         try await sut.load()
         try await sut.load()
         
-        
         #expect(client.messages.count == 2)
         #expect(client.messages.first?.url == url)
         #expect(client.messages.last?.url == url)
@@ -55,7 +54,6 @@ struct FetchRecipeTests {
     
     @Test(arguments: [199, 201, 300, 400, 500])
     func loadDeliversErrorOnNon200HTTPResponse(statusCode: Int) async throws {
-        
         let (sut, client) = makeSUT()
         
         client.complete(withStatusCode: statusCode)
@@ -64,6 +62,16 @@ struct FetchRecipeTests {
             try await sut.load()
         }
         #expect(client.messages.count == 1)
+    }
+    
+    @Test func clientCanCompleteWithData() async throws {
+        let (sut, client) = makeSUT()
+        let testData = Data("test-data".utf8)
+        client.complete(withStatusCode: 200, data: testData)
+        
+        try await sut.load()
+        
+        #expect(client.messages.last?.data == testData)
     }
     
     // MARK: - Helpers
@@ -80,7 +88,7 @@ struct FetchRecipeTests {
     
     private final class HTTPClientSpy: HTTPClient {
         
-        var messages: [(url: URL?, response: URLResponse?, error: Error?)] = []
+        var messages: [(url: URL?, response: URLResponse?, data: Data?, error: Error?)] = []
         
         func data(from url: URL) async throws -> URLResponse {
             let message = getStubbedMessages(for: url)
@@ -88,26 +96,27 @@ struct FetchRecipeTests {
                 throw error
             }
     
-            return try! #require(message.response)
+            return try #require(message.response)
         }
         
         func complete(with error: Error) {
-            messages.append((url: nil, response: nil, error: error))
+            messages.append((url: nil, response: nil, data: nil, error: error))
         }
         
-        func complete(withStatusCode code: Int) {
+        func complete(withStatusCode code: Int, data: Data? = nil) {
             let response = stubResponse(withStatusCode: code)
-            messages.append((url: nil, response: response, error: nil))
+            messages.append((url: nil, response: response, data: data, error: nil))
         }
         
-        func getStubbedMessages(for url: URL) -> (url: URL?, response: URLResponse?, error: Error?) {
+        func getStubbedMessages(for url: URL) -> (url: URL?, response: URLResponse?, data: Data?, error: Error?) {
             if var stubbedMessage = messages.first(where: { $0.url == nil }) {
                 stubbedMessage.url = url
                 return stubbedMessage
             } else {
-                let newMessage: (url: URL?, response: URLResponse?, error: Error?) = (
+                let newMessage: (url: URL?, response: URLResponse?, data: Data?, error: Error?) = (
                     url: url,
                     response: stubResponse(withStatusCode: 200),
+                    data: nil,
                     error: nil)
                 messages.append(newMessage)
                 return newMessage

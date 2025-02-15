@@ -25,8 +25,9 @@ public struct RemoteRecipeLoader {
     
     public func load() async throws {
         let response: URLResponse
+        
         do {
-            response = try await client.data(from: url) 
+            response = try await client.data(from: url)
         } catch {
             throw Error.connectivity
         }
@@ -36,6 +37,7 @@ public struct RemoteRecipeLoader {
         guard httpResponse.statusCode == 200 else {
             throw Error.invalidStatusCode
         }
+
     }
 }
 
