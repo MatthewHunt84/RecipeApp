@@ -84,36 +84,10 @@ struct FetchRecipeTests {
         let (sut, client) = makeSUT()
         let url = makeStubbedURL()
         
-        let recipe1JSON = [
-            "cuisine": "British",
-            "name": "Bakewell Tart",
-            "photo_url_large": "https://some.url/large.jpg",
-            "photo_url_small": "https://some.url/small.jpg",
-            "uuid": "eed6005f-f8c8-451f-98d0-4088e2b40eb6",
-            "source_url": "https://some.url/index.html",
-            "youtube_url": "https://www.youtube.com/watch?v=some.id"
-        ]
-        
-        let recipe2JSON = [
-            "cuisine": "British",
-            "name": "Figgy Pudding",
-            "photo_url_large": "https://some.url/large.jpg",
-            "photo_url_small": "https://some.url/small.jpg",
-            "uuid": "eed6005f-f8c8-451f-98d0-4088e2b40eb6",
-            "source_url": "https://some.url/index.html",
-            "youtube_url": "https://www.youtube.com/watch?v=some.id"
-        ]
-        
-        let recipesJSON = [
-            "recipes" : [recipe1JSON, recipe2JSON]
-        ]
-        
-        let recipesJSONData = try #require(try JSONEncoder().encode(recipesJSON))
-        
-        let recipe1 = Recipe(cuisine: "British", name: "Bakewell Tart", photoUrlLarge: "https://some.url/large.jpg", photoUrlSmall: "https://some.url/small.jpg", uuid: "eed6005f-f8c8-451f-98d0-4088e2b40eb6", sourceUrl: "https://some.url/index.html", youtubeUrl: "https://www.youtube.com/watch?v=some.id")
-        
-        let recipe2 = Recipe(cuisine: "British", name: "Figgy Pudding", photoUrlLarge: "https://some.url/large.jpg", photoUrlSmall: "https://some.url/small.jpg", uuid: "eed6005f-f8c8-451f-98d0-4088e2b40eb6", sourceUrl: "https://some.url/index.html", youtubeUrl: "https://www.youtube.com/watch?v=some.id")
-        
+        let (recipe1, json1) = makeRecipe(name: "Bakewell Tart")
+        let (recipe2, json2) = makeRecipe(name: "Figgy Pudding")
+        let recipesJSONData = makeRecipeJSON(from: [json1, json2])
+
         let result = makeResult(data: recipesJSONData)
         client.stub(url: url, with: result)
         
@@ -154,10 +128,45 @@ struct FetchRecipeTests {
         return .success((validData, response))
     }
     
-    func stubEmptyData() -> Data {
+    private func stubEmptyData() -> Data {
         let emptyRecipeData = Root(recipes: [])
         let data = try! #require(try JSONEncoder().encode(emptyRecipeData))
         return data
+    }
+    
+    private func makeRecipe(cuisine: String = "Cuisine",
+                            name: String = "Name",
+                            photoUrlLarge: String? = "https://some.url/large.jpg",
+                            photoUrlSmall: String? = "https://some.url/small.jpg",
+                            uuid: String = "eed6005f-f8c8-451f-98d0-4088e2b40eb6",
+                            sourceUrl: String? = "https://some.url/index.html",
+                            youtubeUrl: String? = "https://www.youtube.com/watch?v=some.id") -> (recipe: Recipe, json: [String: Any]) {
+        let json: [String: Any] = [
+            "cuisine": cuisine,
+            "name": name,
+            "photo_url_large": photoUrlLarge,
+            "photo_url_small": photoUrlSmall,
+            "uuid": uuid,
+            "source_url": sourceUrl,
+            "youtube_url": youtubeUrl
+        ].compactMapValues { $0 }
+        
+        let recipe = Recipe(cuisine: cuisine,
+                            name: name,
+                            photoUrlLarge: photoUrlLarge,
+                            photoUrlSmall: photoUrlSmall,
+                            uuid: uuid,
+                            sourceUrl: sourceUrl,
+                            youtubeUrl: youtubeUrl)
+        
+        return (recipe: recipe, json: json)
+    }
+    
+    private func makeRecipeJSON(from json: [[String: Any]]) -> Data {
+        let recipesJSON = [
+            "recipes" : json
+        ]
+        return try! #require(try JSONSerialization.data(withJSONObject: recipesJSON))
     }
     
     private final class HTTPClientSpy: HTTPClient {
