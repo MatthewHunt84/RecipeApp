@@ -96,6 +96,18 @@ struct FetchRecipeTests {
         #expect(loadedRecipes == [bakeWellTart.recipe, figgyPudding.recipe])
     }
     
+    @Test func invalidDataThrowsDecodingError() async throws {
+        let (sut, client) = makeSUT()
+        let url = makeStubbedURL()
+
+        let result = makeResult(data: Data("invalid-data".utf8))
+        client.stub(url: url, with: result)
+        
+        await #expect(throws: RemoteRecipeLoader.Error.decodingError) {
+            let loadedRecipes = try await sut.load()
+        }
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(url: URL? = nil) -> (sut: RemoteRecipeLoader, client: HTTPClientSpy) {
