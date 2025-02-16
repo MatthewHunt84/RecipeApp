@@ -7,6 +7,10 @@
 
 import Foundation
 
+public protocol HTTPClient {
+    func data(from url: URL) async throws -> (Data, URLResponse)
+}
+
 public struct RemoteRecipeLoader {
     
     let client: HTTPClient
@@ -16,6 +20,7 @@ public struct RemoteRecipeLoader {
         case connectivity
         case invalidStatusCode
         case invalidHTTPResponse
+        case invalidData
     }
     
     public init(client: HTTPClient, url: URL) {
@@ -23,24 +28,37 @@ public struct RemoteRecipeLoader {
         self.url = url
     }
     
-    public func load() async throws {
-        let response: URLResponse
-        
+    public func load() async throws -> [Recipe] {
+        let dataFromURL: (data: Data, response: URLResponse)
         do {
-            response = try await client.data(from: url)
+            dataFromURL = try await client.data(from: url)
         } catch {
             throw Error.connectivity
         }
-        guard let httpResponse = response as? HTTPURLResponse else {
+        guard let httpResponse = dataFromURL.response as? HTTPURLResponse else {
             throw Error.invalidHTTPResponse
         }
         guard httpResponse.statusCode == 200 else {
             throw Error.invalidStatusCode
         }
-
+        
+        do {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let root = try decoder.decode(Root.self, from: dataFromURL.data)
+            return root.recipes
+        } catch {
+            throw Error.invalidData
+        }
     }
 }
 
-public protocol HTTPClient {
-    func data(from url: URL) async throws -> URLResponse
+public struct Root: Codable {
+    let recipes: [Recipe]
+    
+    public init(recipes: [Recipe]) {
+        self.recipes = recipes
+    }
 }
+
+
