@@ -13,8 +13,8 @@ public protocol HTTPClient {
 
 public struct RemoteRecipeLoader {
     
-    let client: HTTPClient
-    let url: URL
+    private let client: HTTPClient
+    private let url: URL
     
     public enum Error: Swift.Error {
         case connectivity
@@ -34,20 +34,8 @@ public struct RemoteRecipeLoader {
         guard let (data, response) = try? await client.data(from: url) else {
             throw Error.connectivity
         }
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw Error.invalidHTTPResponse
-        }
-        guard httpResponse.statusCode == 200 else {
-            throw Error.invalidStatusCode
-        }
         
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        guard let root = try? decoder.decode(Root.self, from: data) else {
-            throw Error.decodingError
-        }
-        
-        return root.recipes
+        return try RecipeMapper.map(data, response)
     }
 }
 
@@ -56,6 +44,26 @@ public struct Root: Codable {
     
     public init(recipes: [Recipe]) {
         self.recipes = recipes
+    }
+}
+
+private struct RecipeMapper {
+    
+    static func map(_ data: Data, _ response: URLResponse) throws -> [Recipe] {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw RemoteRecipeLoader.Error.invalidHTTPResponse
+        }
+        guard httpResponse.statusCode == 200 else {
+            throw RemoteRecipeLoader.Error.invalidStatusCode
+        }
+        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        guard let root = try? decoder.decode(Root.self, from: data) else {
+            throw RemoteRecipeLoader.Error.decodingError
+        }
+        
+        return root.recipes
     }
 }
 
