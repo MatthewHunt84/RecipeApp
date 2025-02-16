@@ -12,10 +12,10 @@ import FetchRecipe
 
 
 struct FetchRecipeTests {
-
+    
     @Test func initDoesNotRequestData() throws {
         let (_, client) = makeSUT()
-
+        
         #expect(client.stubs.isEmpty)
     }
     
@@ -80,6 +80,48 @@ struct FetchRecipeTests {
         #expect(recipes == [])
     }
     
+    @Test func loadDeliversRecipesFromValidData() async throws {
+        let (sut, client) = makeSUT()
+        let url = makeStubbedURL()
+        
+        let recipe1JSON = [
+            "cuisine": "British",
+            "name": "Bakewell Tart",
+            "photo_url_large": "https://some.url/large.jpg",
+            "photo_url_small": "https://some.url/small.jpg",
+            "uuid": "eed6005f-f8c8-451f-98d0-4088e2b40eb6",
+            "source_url": "https://some.url/index.html",
+            "youtube_url": "https://www.youtube.com/watch?v=some.id"
+        ]
+        
+        let recipe2JSON = [
+            "cuisine": "British",
+            "name": "Figgy Pudding",
+            "photo_url_large": "https://some.url/large.jpg",
+            "photo_url_small": "https://some.url/small.jpg",
+            "uuid": "eed6005f-f8c8-451f-98d0-4088e2b40eb6",
+            "source_url": "https://some.url/index.html",
+            "youtube_url": "https://www.youtube.com/watch?v=some.id"
+        ]
+        
+        let recipesJSON = [
+            "recipes" : [recipe1JSON, recipe2JSON]
+        ]
+        
+        let recipesJSONData = try #require(try JSONEncoder().encode(recipesJSON))
+        
+        let recipe1 = Recipe(cuisine: "British", name: "Bakewell Tart", photoUrlLarge: "https://some.url/large.jpg", photoUrlSmall: "https://some.url/small.jpg", uuid: "eed6005f-f8c8-451f-98d0-4088e2b40eb6", sourceUrl: "https://some.url/index.html", youtubeUrl: "https://www.youtube.com/watch?v=some.id")
+        
+        let recipe2 = Recipe(cuisine: "British", name: "Figgy Pudding", photoUrlLarge: "https://some.url/large.jpg", photoUrlSmall: "https://some.url/small.jpg", uuid: "eed6005f-f8c8-451f-98d0-4088e2b40eb6", sourceUrl: "https://some.url/index.html", youtubeUrl: "https://www.youtube.com/watch?v=some.id")
+        
+        let result = makeResult(data: recipesJSONData)
+        client.stub(url: url, with: result)
+        
+        let loadedRecipes = try await sut.load()
+        
+        #expect(loadedRecipes == [recipe1, recipe2])
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(url: URL? = nil) -> (sut: RemoteRecipeLoader, client: HTTPClientSpy) {
@@ -114,7 +156,7 @@ struct FetchRecipeTests {
     
     func stubEmptyData() -> Data {
         let emptyRecipeData = Root(recipes: [])
-        let data = try! JSONEncoder().encode(emptyRecipeData)
+        let data = try! #require(try JSONEncoder().encode(emptyRecipeData))
         return data
     }
     
