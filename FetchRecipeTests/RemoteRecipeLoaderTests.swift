@@ -84,16 +84,16 @@ struct FetchRecipeTests {
         let (sut, client) = makeSUT()
         let url = makeStubbedURL()
         
-        let (recipe1, json1) = makeRecipe(name: "Bakewell Tart")
-        let (recipe2, json2) = makeRecipe(name: "Figgy Pudding")
-        let recipesJSONData = makeRecipeJSON(from: [json1, json2])
+        let bakeWellTart = makeRecipe(name: "Bakewell Tart")
+        let figgyPudding = makeRecipe(name: "Figgy Pudding")
+        let recipesJSONData = makeRecipeJSON(from: [bakeWellTart.json, figgyPudding.json])
 
         let result = makeResult(data: recipesJSONData)
         client.stub(url: url, with: result)
         
         let loadedRecipes = try await sut.load()
         
-        #expect(loadedRecipes == [recipe1, recipe2])
+        #expect(loadedRecipes == [bakeWellTart.recipe, figgyPudding.recipe])
     }
     
     // MARK: - Helpers
