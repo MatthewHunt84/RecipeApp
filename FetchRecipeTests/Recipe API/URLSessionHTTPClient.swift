@@ -24,7 +24,7 @@ struct URLSessionHTTPClientTests {
         URLProtocolStub.startInterceptingRequests()
         let url = try #require(URL(string: "http://any-url.com"))
         let errorIn = NSError(domain: "URL Request failed", code: 0)
-        URLProtocolStub.stub(url: url, error: errorIn)
+        URLProtocolStub.stub(url: url, data: nil, response: nil, error: errorIn)
         let sut = URLSessionHTTPClient()
         
         do {
@@ -42,13 +42,15 @@ struct URLSessionHTTPClientTests {
 private class URLProtocolStub: URLProtocol {
     
     private struct Stub {
+        let data: Data?
+        let response: URLResponse?
         let error: Error?
     }
 
     private static var stubs: [URL: Stub] = [:]
     
-    static func stub(url: URL, error: Error? = nil) {
-        stubs[url] = Stub(error: error)
+    static func stub(url: URL, data: Data?, response: URLResponse?, error: Error?) {
+        stubs[url] = Stub(data: data, response: response, error: error)
     }
     
     static func startInterceptingRequests() {
@@ -75,6 +77,14 @@ private class URLProtocolStub: URLProtocol {
         
         if let error = stub.error {
             client?.urlProtocol(self, didFailWithError: error)
+        }
+        
+        if let data = stub.data {
+            client?.urlProtocol(self, didLoad: data)
+        }
+        
+        if let response = stub.response {
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
         }
         
         client?.urlProtocolDidFinishLoading(self)
