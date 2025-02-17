@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct RemoteRecipeLoader {
+public struct RemoteRecipeLoader: RecipeLoader {
     
     private let client: HTTPClient
     private let url: URL
