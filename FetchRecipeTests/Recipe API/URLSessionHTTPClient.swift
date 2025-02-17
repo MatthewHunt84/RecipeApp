@@ -18,12 +18,14 @@ struct URLSessionHTTPClient: HTTPClient {
     }
 }
 
-
 @Suite(.serialized)
-struct URLSessionHTTPClientTests {
+class URLSessionHTTPClientTests {
+    
+    init() { URLProtocolStub.startInterceptingRequests() }
+    deinit { URLProtocolStub.stopInterceptingRequests() }
     
     @Test func testDataFromURLFailsOnRequestError() async throws {
-        URLProtocolStub.startInterceptingRequests()
+        
         let url = try #require(URL(string: "http://any-url.com"))
         let errorIn = NSError(domain: "URL Request failed", code: 0)
         URLProtocolStub.stub(data: nil, response: nil, error: errorIn)
@@ -36,12 +38,9 @@ struct URLSessionHTTPClientTests {
             #expect(nsError.domain == errorIn.domain)
             #expect(nsError.code == errorIn.code)
         }
-        
-        URLProtocolStub.stopInterceptingRequests()
     }
     
     @Test func testDataFromURLPerformsRequestWithExpectedURL() async throws {
-        URLProtocolStub.startInterceptingRequests()
         let url = try #require(URL(string: "http://url-test.com"))
         let data = Data("data".utf8)
         let response = URLResponse()
@@ -52,8 +51,6 @@ struct URLSessionHTTPClientTests {
         
         #expect(URLProtocolStub.requests.last?.url == url)
         #expect(URLProtocolStub.requests.last?.httpMethod == "GET")
-        
-        URLProtocolStub.stopInterceptingRequests()
     }
 }
 
