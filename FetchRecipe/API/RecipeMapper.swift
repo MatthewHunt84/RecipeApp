@@ -9,7 +9,7 @@ import Foundation
 
 struct RecipeMapper {
     
-    static let OK_200 = 200
+    private static let OK_200 = 200
     
     static func map(_ data: Data, _ response: URLResponse) throws -> [Recipe] {
         guard let httpResponse = response as? HTTPURLResponse else {
