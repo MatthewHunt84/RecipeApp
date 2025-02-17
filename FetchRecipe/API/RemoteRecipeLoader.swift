@@ -45,24 +45,6 @@ public struct Root: Codable {
     }
 }
 
-private struct RecipeMapper {
-    
-    static func map(_ data: Data, _ response: URLResponse) throws -> [Recipe] {
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw RemoteRecipeLoader.Error.invalidHTTPResponse
-        }
-        guard httpResponse.statusCode == 200 else {
-            throw RemoteRecipeLoader.Error.invalidStatusCode
-        }
-        
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        guard let root = try? decoder.decode(Root.self, from: data) else {
-            throw RemoteRecipeLoader.Error.decodingError
-        }
-        
-        return root.recipes
-    }
-}
+
 
 
