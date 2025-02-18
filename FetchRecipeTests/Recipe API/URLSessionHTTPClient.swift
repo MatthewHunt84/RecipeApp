@@ -25,14 +25,13 @@ class URLSessionHTTPClientTests {
     deinit { URLProtocolStub.stopInterceptingRequests() }
     
     @Test func testDataFromURLFailsOnRequestError() async throws {
-        
-        let url = try #require(URL(string: "http://any-url.com"))
+
         let errorIn = NSError(domain: "URL Request failed", code: 0)
+        let sut = makeSUT()
         URLProtocolStub.stub(data: nil, response: nil, error: errorIn)
-        let sut = URLSessionHTTPClient()
         
         do {
-            let _ = try await sut.data(from: url)
+            let _ = try await sut.data(from: anyURL())
         } catch {
             let nsError = error as NSError
             #expect(nsError.domain == errorIn.domain)
@@ -41,18 +40,30 @@ class URLSessionHTTPClientTests {
     }
     
     @Test func testDataFromURLPerformsRequestWithExpectedURL() async throws {
-        let url = try #require(URL(string: "http://url-test.com"))
+        let url = try #require(URL(string: "http://specific-test-url.com"))
         let data = Data("data".utf8)
         let response = URLResponse()
+        let sut = makeSUT()
         URLProtocolStub.stub(data: data, response: response, error: nil)
-        let sut = URLSessionHTTPClient()
         
         let _ = try await sut.data(from: url)
         
         #expect(URLProtocolStub.requests.last?.url == url)
         #expect(URLProtocolStub.requests.last?.httpMethod == "GET")
     }
+    
+    // MARK: Helpers
+    
+    func makeSUT() -> HTTPClient {
+        return URLSessionHTTPClient()
+    }
+    
+    func anyURL() -> URL {
+        return try! #require(URL(string: "http://any-url.com"))
+    }
 }
+
+
 
 private class URLProtocolStub: URLProtocol {
     
