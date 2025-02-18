@@ -26,16 +26,15 @@ class URLSessionHTTPClientTests {
     
     @Test func testDataFromURLFailsOnRequestError() async throws {
 
-        let errorIn = NSError(domain: "URL Request failed", code: 0)
+        let expectedError = NSError(domain: "URL Request failed", code: 0)
         let sut = makeSUT()
-        URLProtocolStub.stub(data: nil, response: nil, error: errorIn)
+        URLProtocolStub.stub(data: nil, response: nil, error: expectedError)
         
         do {
             let _ = try await sut.data(from: anyURL())
-        } catch {
-            let nsError = error as NSError
-            #expect(nsError.domain == errorIn.domain)
-            #expect(nsError.code == errorIn.code)
+        } catch let error as NSError {
+            #expect(error.domain == expectedError.domain)
+            #expect(error.code == expectedError.code)
         }
     }
     
@@ -50,6 +49,17 @@ class URLSessionHTTPClientTests {
         
         #expect(URLProtocolStub.requests.last?.url == url)
         #expect(URLProtocolStub.requests.last?.httpMethod == "GET")
+    }
+    
+    @Test func dataFromURLFailsWithNilValues() async throws {
+        let sut = makeSUT()
+        URLProtocolStub.stub(data: nil, response: nil, error: nil)
+        
+        do {
+            let _ = try await sut.data(from: anyURL())
+        } catch let error as NSError {
+            #expect(error.domain == "All values nil")
+        }
     }
     
     // MARK: Helpers
@@ -101,6 +111,11 @@ private class URLProtocolStub: URLProtocol {
     
     override func startLoading() {
         guard let stub = URLProtocolStub.stubs.first else { return }
+        if (stub.data == nil && stub.response == nil && stub.error == nil) {
+            client?.urlProtocol(self, didFailWithError: NSError(domain: "All values nil", code: 0))
+            client?.urlProtocolDidFinishLoading(self)
+            return
+        }
         
         if let error = stub.error {
             client?.urlProtocol(self, didFailWithError: error)
