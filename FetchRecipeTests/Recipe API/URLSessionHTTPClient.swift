@@ -27,11 +27,9 @@ class URLSessionHTTPClientTests {
     @Test func testDataFromURLFailsOnRequestError() async throws {
 
         let expectedError = NSError(domain: "URL Request failed", code: 0)
-        let sut = makeSUT()
-        URLProtocolStub.stub(data: nil, response: nil, error: expectedError)
         
         do {
-            let _ = try await sut.data(from: anyURL())
+            let _ = try await completeWithResult(.failure(expectedError))
         } catch let error as NSError {
             #expect(error.domain == expectedError.domain)
             #expect(error.code == expectedError.code)
@@ -42,10 +40,8 @@ class URLSessionHTTPClientTests {
         let url = try #require(URL(string: "http://specific-test-url.com"))
         let data = Data("data".utf8)
         let response = URLResponse()
-        let sut = makeSUT()
-        URLProtocolStub.stub(data: data, response: response, error: nil)
         
-        let _ = try await sut.data(from: url)
+        let _ = try await completeWithResult(.success((data, response)), from: url)
         
         #expect(URLProtocolStub.requests.last?.url == url)
         #expect(URLProtocolStub.requests.last?.httpMethod == "GET")
@@ -70,6 +66,18 @@ class URLSessionHTTPClientTests {
     
     func anyURL() -> URL {
         return try! #require(URL(string: "http://any-url.com"))
+    }
+    
+    func completeWithResult(_ result: Result<(Data, URLResponse), Error>, from url: URL? = nil) async throws -> (Data, URLResponse) {
+        switch result {
+        case .success(let (data, response)):
+            URLProtocolStub.stub(data: data, response: response, error: nil)
+        case .failure(let error):
+            URLProtocolStub.stub(data: nil, response: nil, error: error)
+        }
+        
+        let sut = makeSUT()
+        return try await sut.data(from: url ?? anyURL())
     }
 }
 
