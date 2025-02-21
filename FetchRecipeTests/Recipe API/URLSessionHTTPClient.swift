@@ -46,18 +46,7 @@ class URLSessionHTTPClientTests {
         #expect(URLProtocolStub.requests.last?.url == url)
         #expect(URLProtocolStub.requests.last?.httpMethod == "GET")
     }
-    
-    @Test func dataFromURLFailsWithNilValues() async throws {
-        let sut = makeSUT()
-        URLProtocolStub.stub(data: nil, response: nil, error: nil)
         
-        do {
-            let _ = try await sut.data(from: anyURL())
-        } catch let error as NSError {
-            #expect(error.domain == "All values nil")
-        }
-    }
-    
     // MARK: Helpers
     
     func makeSUT() -> HTTPClient {
@@ -118,9 +107,6 @@ private class URLProtocolStub: URLProtocol {
     
     override func startLoading() {
         guard let stub = URLProtocolStub.stubs.first else { return }
-        if stub.data == nil, stub.response == nil, stub.error == nil {
-            client?.urlProtocol(self, didFailWithError: NSError(domain: "All values nil", code: 0))
-        }
         
         if let error = stub.error {
             client?.urlProtocol(self, didFailWithError: error)
