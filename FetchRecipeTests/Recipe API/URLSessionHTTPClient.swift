@@ -74,7 +74,6 @@ class URLSessionHTTPClientTests {
 }
 
 
-
 private class URLProtocolStub: URLProtocol {
     
     private struct Stub {
@@ -111,10 +110,8 @@ private class URLProtocolStub: URLProtocol {
     
     override func startLoading() {
         guard let stub = URLProtocolStub.stubs.first else { return }
-        if (stub.data == nil && stub.response == nil && stub.error == nil) {
+        if stub.data == nil, stub.response == nil, stub.error == nil {
             client?.urlProtocol(self, didFailWithError: NSError(domain: "All values nil", code: 0))
-            client?.urlProtocolDidFinishLoading(self)
-            return
         }
         
         if let error = stub.error {
