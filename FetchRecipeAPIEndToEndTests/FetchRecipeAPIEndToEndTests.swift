@@ -9,9 +9,10 @@ import Testing
 import FetchRecipe
 import Foundation
 
+@Suite(.timeLimit(.minutes(1)))
 struct FetchRecipeAPIEndToEndTests {
 
-    @Test(.timeLimit(.minutes(1)))
+    @Test
     func testEndToEndServerGETRecipeDataReturnsData() async throws {
         let client = URLSessionHTTPClient()
         let url = try #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"))
@@ -23,7 +24,7 @@ struct FetchRecipeAPIEndToEndTests {
         #expect(recipes.count == 63)
     }
     
-    @Test(.timeLimit(.minutes(1)))
+    @Test
     func testEndToEndServerGETRecipeDataMatchesExpectedRecipes() async throws {
         let client = URLSessionHTTPClient()
         let url = try #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"))
