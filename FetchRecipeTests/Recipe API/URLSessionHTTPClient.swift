@@ -46,6 +46,19 @@ class URLSessionHTTPClientTests {
         #expect(URLProtocolStub.requests.last?.url == url)
         #expect(URLProtocolStub.requests.last?.httpMethod == "GET")
     }
+    
+    
+    @Test func testDataFromURLSucceedsWithValidHTTPURLResponse() async throws {
+        let expectedData = Data("data".utf8)
+        let expectedHTTPURLResponse = HTTPURLResponse()
+        
+        let (data, response) = try await completeWithResult(.success((expectedData, expectedHTTPURLResponse)))
+        
+        let httpResponse = try #require(response as? HTTPURLResponse)
+        #expect(httpResponse.url == expectedHTTPURLResponse.url)
+        #expect(httpResponse.statusCode == expectedHTTPURLResponse.statusCode)
+        #expect(data == expectedData)
+    }
         
     // MARK: Helpers
     
