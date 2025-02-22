@@ -38,7 +38,7 @@ class URLSessionHTTPClientTests {
     
     @Test func testDataFromURLPerformsRequestWithExpectedURL() async throws {
         let url = try #require(URL(string: "http://specific-test-url.com"))
-        let data = Data("data".utf8)
+        let data = anyData()
         let response = URLResponse()
         
         let _ = try await completeWithResult(.success((data, response)), from: url)
@@ -49,7 +49,7 @@ class URLSessionHTTPClientTests {
     
     
     @Test func testDataFromURLSucceedsWithValidHTTPURLResponse() async throws {
-        let expectedData = Data("data".utf8)
+        let expectedData = anyData()
         let expectedHTTPURLResponse = HTTPURLResponse()
         
         let (data, response) = try await completeWithResult(.success((expectedData, expectedHTTPURLResponse)))
@@ -68,6 +68,10 @@ class URLSessionHTTPClientTests {
     
     func anyURL() -> URL {
         return try! #require(URL(string: "http://any-url.com"))
+    }
+    
+    func anyData() -> Data {
+        return Data("data".utf8)
     }
     
     func completeWithResult(_ result: Result<(Data, URLResponse), Error>, from url: URL? = nil) async throws -> (Data, URLResponse) {
