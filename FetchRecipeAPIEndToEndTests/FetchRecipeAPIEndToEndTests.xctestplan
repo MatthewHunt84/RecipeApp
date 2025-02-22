@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "B8EADF1B-CDF1-4A6D-AE20-AC0E36B4BA93",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "threadSanitizerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:FetchRecipe.xcodeproj",
+        "identifier" : "F4F715982D698D4200ADA2A1",
+        "name" : "FetchRecipeAPIEndToEndTests"
+      }
+    }
+  ],
+  "version" : 1
+}
