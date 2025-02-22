@@ -29,23 +29,27 @@ struct LocalRecipeLoader {
 struct LocalRecipeCacheTests {
     
     @Test func testCacheInitDoesNotDeleteData() {
-        let store = RecipeStore()
-        let _ = LocalRecipeLoader(store: store)
+        let (_, store) = makeSUT()
         
         #expect(store.deletedRecipes == [])
     }
     
     @Test func testNewSaveRequestsDeletionOfOldCachedRecipes() {
-        let store = RecipeStore()
-        let localRecipeLoader = LocalRecipeLoader(store: store)
+        let (sut, store) = makeSUT()
         let uniqueRecipe = makeUniqueRecipe()
         
-        localRecipeLoader.save(uniqueRecipe)
+        sut.save(uniqueRecipe)
         
         #expect(store.deletionCallCount == 1)
     }
     
     // MARK: Helpers
+    
+    func makeSUT() -> (LocalRecipeLoader, RecipeStore) {
+        let store = RecipeStore()
+        let localRecipeLoader = LocalRecipeLoader(store: store)
+        return (localRecipeLoader, store)
+    }
     
     func makeUniqueRecipe() -> Recipe {
         Recipe(cuisine: "any",
