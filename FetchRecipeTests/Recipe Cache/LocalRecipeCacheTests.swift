@@ -9,37 +9,6 @@ import Foundation
 import FetchRecipe
 import Testing
 
-class RecipeStore {
-    var deletedRecipes: [Recipe] = []
-    var savedRecipes: [Recipe] = []
-
-    var deletionStubs: [Result<Recipe, Error>] = []
-    var insertionStubs: [Result<Recipe, Error>] = []
-    
-    func stubDeletionResult(_ result: Result<Recipe, Error>) {
-        deletionStubs.append(result)
-    }
-    
-    func stubInsertionResult(_ result: Result<Recipe, Error>) {
-        insertionStubs.append(result)
-    }
-    
-    func deleteCachedRecipes() throws {
-        if case .failure(let error) = deletionStubs.first {
-            throw error
-        }
-        deletedRecipes.append(contentsOf: savedRecipes)
-        savedRecipes.removeAll()
-    }
-    
-    func insertRecipes(_ recipes: [Recipe]) throws {
-        if case .failure(let error) = insertionStubs.first {
-            throw error
-        }
-        savedRecipes.append(contentsOf: recipes)
-    }
-}
-
 struct LocalRecipeLoader {
     let store: RecipeStore
     
@@ -107,8 +76,8 @@ struct LocalRecipeCacheTests {
     
     // MARK: Helpers
     
-    func makeSUT() -> (LocalRecipeLoader, RecipeStore) {
-        let store = RecipeStore()
+    func makeSUT() -> (LocalRecipeLoader, RecipeStoreSpy) {
+        let store = RecipeStoreSpy()
         let localRecipeLoader = LocalRecipeLoader(store: store)
         return (localRecipeLoader, store)
     }
@@ -122,4 +91,37 @@ struct LocalRecipeCacheTests {
                sourceUrl: nil,
                youtubeUrl: nil)
     }
+    
+    final class RecipeStoreSpy: RecipeStore {
+        var deletedRecipes: [Recipe] = []
+        var savedRecipes: [Recipe] = []
+
+        private var deletionStubs: [Result<Recipe, Error>] = []
+        private var insertionStubs: [Result<Recipe, Error>] = []
+        
+        func stubDeletionResult(_ result: Result<Recipe, Error>) {
+            deletionStubs.append(result)
+        }
+        
+        func stubInsertionResult(_ result: Result<Recipe, Error>) {
+            insertionStubs.append(result)
+        }
+        
+        func deleteCachedRecipes() throws {
+            if case .failure(let error) = deletionStubs.first {
+                throw error
+            }
+            deletedRecipes.append(contentsOf: savedRecipes)
+            savedRecipes.removeAll()
+        }
+        
+        func insertRecipes(_ recipes: [Recipe]) throws {
+            if case .failure(let error) = insertionStubs.first {
+                throw error
+            }
+            savedRecipes.append(contentsOf: recipes)
+        }
+    }
 }
+
+

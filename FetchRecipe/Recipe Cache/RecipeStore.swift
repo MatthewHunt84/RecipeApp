@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol RecipeStore {
+public protocol RecipeStore {
     func deleteCachedRecipes() throws
-    func saveRecipes(_ recipes: [Recipe]) throws
+    func insertRecipes(_ recipes: [Recipe]) throws
 }
