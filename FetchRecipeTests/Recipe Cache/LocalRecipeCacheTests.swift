@@ -24,6 +24,7 @@ class RecipeStore {
             throw error
         }
         deletionCallCount += 1
+        saveRecipes()
     }
     
     func saveRecipes() {
@@ -68,6 +69,15 @@ struct LocalRecipeCacheTests {
         }
         
         #expect(store.insertionCallCount == 0)
+    }
+    
+    @Test func testCacheRequestsSaveUponCacheDeletionSuccess() throws {
+        let (sut, store) = makeSUT()
+        let uniqueRecipe = makeUniqueRecipe()
+        
+        try sut.save(uniqueRecipe)
+        
+        #expect(store.insertionCallCount == 1)
     }
     
     // MARK: Helpers
