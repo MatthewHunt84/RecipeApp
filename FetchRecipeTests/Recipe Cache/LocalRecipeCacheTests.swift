@@ -12,24 +12,23 @@ import Testing
 class RecipeStore {
     var deletedRecipes: [Recipe] = []
     var savedRecipes: [Recipe] = []
-    var deletionCallCount = 0
-    var insertionCallCount = 0
-    var results: [Result<Recipe, Error>] = []
+
+    var stubs: [Result<Recipe, Error>] = []
     
     func stub(_ result: Result<Recipe, Error>) {
-        results.append(result)
+        stubs.append(result)
     }
     
     func deleteCachedRecipes() throws {
-        if case .failure(let error) = results.first {
+        if case .failure(let error) = stubs.first {
             throw error
         }
-        deletionCallCount += 1
+        deletedRecipes.append(contentsOf: savedRecipes)
+        savedRecipes.removeAll()
     }
     
     func saveRecipes(_ recipes: [Recipe]) {
         savedRecipes = recipes
-        insertionCallCount += 1
     }
 }
 
@@ -55,8 +54,9 @@ struct LocalRecipeCacheTests {
         let uniqueRecipe = [makeUniqueRecipe()]
         
         try sut.save(uniqueRecipe)
+        try sut.save(uniqueRecipe)
         
-        #expect(store.deletionCallCount == 1)
+        #expect(store.deletedRecipes.count == 1)
     }
     
     @Test func testCacheDoesNotRequestCacheInsertionOnDeletionError() throws {
@@ -70,7 +70,7 @@ struct LocalRecipeCacheTests {
             try sut.save(uniqueRecipe)
         }
         
-        #expect(store.insertionCallCount == 0)
+        #expect(store.savedRecipes.count == 0)
     }
     
     @Test func testCacheRequestsSaveUponCacheDeletionSuccess() throws {
@@ -79,7 +79,7 @@ struct LocalRecipeCacheTests {
         
         try sut.save(uniqueRecipe)
         
-        #expect(store.insertionCallCount == 1)
+        #expect(store.savedRecipes.count == 1)
     }
     
     @Test func testCacheSuccessfullySavesRecipes() throws {
