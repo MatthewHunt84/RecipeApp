@@ -53,8 +53,7 @@ struct FetchRecipeAPIEndToEndTests {
     
     @Test func testEmptyDataReturnsWithoutError() async throws {
         let client = URLSessionHTTPClient()
-        let emptyDataURL = try #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes-empty.json"))
-        let loader = RemoteRecipeLoader(client: client, url: emptyDataURL)
+        let loader = RemoteRecipeLoader(client: client, url: makeEmptyDataURL())
         
         let recipes = try await loader.load()
         
@@ -69,6 +68,10 @@ struct FetchRecipeAPIEndToEndTests {
     
     func makeMalformedDataURL() -> URL {
         try! #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes-malformed.json"))
+    }
+    
+    func makeEmptyDataURL() -> URL {
+        try! #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes-empty.json"))
     }
     
     func expectedRecipe(at index: Int) -> Recipe {
