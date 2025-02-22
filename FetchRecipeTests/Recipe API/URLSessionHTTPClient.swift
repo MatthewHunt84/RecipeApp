@@ -25,7 +25,6 @@ class URLSessionHTTPClientTests {
     deinit { URLProtocolStub.stopInterceptingRequests() }
     
     @Test func testDataFromURLFailsOnRequestError() async throws {
-
         let expectedError = NSError(domain: "URL Request failed", code: 0)
         
         do {
@@ -47,7 +46,6 @@ class URLSessionHTTPClientTests {
         #expect(URLProtocolStub.requests.last?.httpMethod == "GET")
     }
     
-    
     @Test func testDataFromURLSucceedsWithValidHTTPURLResponse() async throws {
         let expectedData = anyData()
         let expectedHTTPURLResponse = HTTPURLResponse()
@@ -58,6 +56,17 @@ class URLSessionHTTPClientTests {
         #expect(httpResponse.url == expectedHTTPURLResponse.url)
         #expect(httpResponse.statusCode == expectedHTTPURLResponse.statusCode)
         #expect(data == expectedData)
+    }
+    
+    @Test func testNilDataWithValidURLResponseReturnsSuccessfullyWithData() async throws {
+        let sut = makeSUT()
+        let nilData: Data? = nil
+        let response = URLResponse()
+        URLProtocolStub.stub(data: nilData, response: response, error: nil)
+
+        let (data, _) = try await sut.data(from: anyURL())
+        
+        #expect(data != nilData)
     }
         
     // MARK: Helpers
