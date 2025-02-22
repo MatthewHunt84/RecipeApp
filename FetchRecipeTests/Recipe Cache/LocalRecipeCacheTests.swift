@@ -59,23 +59,24 @@ struct LocalRecipeCacheTests {
     
     @Test func testSaveNewRecipeRequestsDeletionOfCachedRecipes() throws {
         let (sut, store) = makeSUT()
-        let uniqueRecipe = [makeUniqueRecipe()]
+        let recipe1 = [makeUniqueRecipe()]
+        let recipe2 = [makeUniqueRecipe()]
         
-        try sut.save(uniqueRecipe)
-        try sut.save(uniqueRecipe)
+        try sut.save(recipe1)
+        try sut.save(recipe2)
         
         #expect(store.deletedRecipes.count == 1)
     }
     
     @Test func testDeletionErrorPreventsSavingNewRecipesToCache() throws {
         let (sut, store) = makeSUT()
-        let uniqueRecipe = [makeUniqueRecipe()]
+        let recipe = [makeUniqueRecipe()]
         let deletionError = NSError(domain: "Deletion Error", code: 0)
         
         store.stubDeletionResult(.failure(deletionError))
         
         #expect(throws: deletionError) {
-            try sut.save(uniqueRecipe)
+            try sut.save(recipe)
         }
         
         #expect(store.savedRecipes.count == 0)
@@ -83,22 +84,22 @@ struct LocalRecipeCacheTests {
 
     @Test func testDeletionSuccessPreceedsSuccessfullySavingRecipes() throws {
         let (sut, store) = makeSUT()
-        let uniqueRecipes = [makeUniqueRecipe(), makeUniqueRecipe()]
+        let recipes = [makeUniqueRecipe(), makeUniqueRecipe()]
         
-        try sut.save(uniqueRecipes)
+        try sut.save(recipes)
         
-        #expect(store.savedRecipes == uniqueRecipes)
+        #expect(store.savedRecipes == recipes)
     }
     
     @Test func testSaveFailsOnSaveError() throws {
         let (sut, store) = makeSUT()
-        let uniqueRecipe = [makeUniqueRecipe()]
+        let recipe = [makeUniqueRecipe()]
         let saveError = NSError(domain: "Save Error", code: 0)
         
         store.stubInsertionResult(.failure(saveError))
         
         #expect(throws: saveError) {
-            try sut.save(uniqueRecipe)
+            try sut.save(recipe)
         }
         
         #expect(store.savedRecipes.isEmpty)
