@@ -13,20 +13,18 @@ import Foundation
 struct FetchRecipeAPIEndToEndTests {
 
     @Test func testEndToEndServerGETRecipeDataReturnsData() async throws {
-        let client = URLSessionHTTPClient()
-        let loader = RemoteRecipeLoader(client: client, url: makeValidURL())
+        let validURL = makeValidURL()
         
-        let recipes = try await loader.load()
+        let recipes = try await loadFromURL(validURL)
         
         #expect(recipes != nil)
         #expect(recipes.count == 63)
     }
     
     @Test func testEndToEndServerGETRecipeDataMatchesExpectedRecipes() async throws {
-        let client = URLSessionHTTPClient()
-        let loader = RemoteRecipeLoader(client: client, url: makeValidURL())
+        let validURL = makeValidURL()
         
-        let recipes = try await loader.load()
+        let recipes = try await loadFromURL(validURL)
         
         #expect(recipes[0] == expectedRecipe(at: 0))
         #expect(recipes[1] == expectedRecipe(at: 1))
@@ -42,25 +40,29 @@ struct FetchRecipeAPIEndToEndTests {
     }
     
     @Test func testMalformedDataReturnsError() async throws {
-        let client = URLSessionHTTPClient()
-        let url = makeMalformedDataURL()
-        let loader = RemoteRecipeLoader(client: client, url: url)
+        let malformedDataURL = makeMalformedDataURL()
         
         await #expect(throws: RemoteRecipeLoader.Error.decodingError) {
-            let _ = try await loader.load()
+            let _ = try await loadFromURL(malformedDataURL)
         }
     }
     
     @Test func testEmptyDataReturnsWithoutError() async throws {
-        let client = URLSessionHTTPClient()
-        let loader = RemoteRecipeLoader(client: client, url: makeEmptyDataURL())
+        let emptyDataURL = makeEmptyDataURL()
         
-        let recipes = try await loader.load()
+        let recipes = try await loadFromURL(emptyDataURL)
         
         #expect(recipes.isEmpty)
     }
     
     // MARK: Helpers
+    
+    func loadFromURL(_ url: URL) async throws -> [Recipe]  {
+        let client = URLSessionHTTPClient()
+        let loader = RemoteRecipeLoader(client: client, url: url)
+        
+        return try await loader.load()
+    }
     
     func makeValidURL() -> URL {
         try! #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"))
