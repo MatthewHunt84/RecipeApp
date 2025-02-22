@@ -9,15 +9,6 @@ import Foundation
 import FetchRecipe
 import Testing
 
-struct URLSessionHTTPClient: HTTPClient {
-
-    let session: URLSession = .shared
-    
-    func data(from url: URL) async throws -> (Data, URLResponse) {
-        try await session.data(from: url)
-    }
-}
-
 @Suite(.serialized)
 class URLSessionHTTPClientTests {
     
