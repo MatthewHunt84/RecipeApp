@@ -43,13 +43,13 @@ struct LocalRecipeLoader {
 
 struct LocalRecipeCacheTests {
     
-    @Test func testCacheInitDoesNotDeleteData() {
+    @Test func testCacheInitDoesNotDeleteSavedRecipes() {
         let (_, store) = makeSUT()
         
         #expect(store.deletedRecipes == [])
     }
     
-    @Test func testNewSaveRequestsDeletionOfOldCachedRecipes() throws {
+    @Test func testSaveNewRecipeRequestsDeletionOfCachedRecipes() throws {
         let (sut, store) = makeSUT()
         let uniqueRecipe = [makeUniqueRecipe()]
         
@@ -59,7 +59,7 @@ struct LocalRecipeCacheTests {
         #expect(store.deletedRecipes.count == 1)
     }
     
-    @Test func testCacheDoesNotRequestCacheInsertionOnDeletionError() throws {
+    @Test func testDeletionErrorPreventsSavingNewRecipesToCache() throws {
         let (sut, store) = makeSUT()
         let uniqueRecipe = [makeUniqueRecipe()]
         let error = NSError(domain: "Deletion Error", code: 0)
@@ -72,17 +72,8 @@ struct LocalRecipeCacheTests {
         
         #expect(store.savedRecipes.count == 0)
     }
-    
-    @Test func testCacheRequestsSaveUponCacheDeletionSuccess() throws {
-        let (sut, store) = makeSUT()
-        let uniqueRecipe = [makeUniqueRecipe()]
-        
-        try sut.save(uniqueRecipe)
-        
-        #expect(store.savedRecipes.count == 1)
-    }
-    
-    @Test func testCacheSuccessfullySavesRecipes() throws {
+
+    @Test func testDeletionSuccessPreceedsSuccessfullySavingRecipes() throws {
         let (sut, store) = makeSUT()
         let uniqueRecipes = [makeUniqueRecipe(), makeUniqueRecipe()]
         
