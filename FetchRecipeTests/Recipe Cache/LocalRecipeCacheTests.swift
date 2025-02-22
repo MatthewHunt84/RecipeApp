@@ -11,6 +11,7 @@ import Testing
 
 class RecipeStore {
     var deletedRecipes: [Recipe] = []
+    var savedRecipes: [Recipe] = []
     var deletionCallCount = 0
     var insertionCallCount = 0
     var results: [Result<Recipe, Error>] = []
@@ -24,10 +25,10 @@ class RecipeStore {
             throw error
         }
         deletionCallCount += 1
-        saveRecipes()
     }
     
-    func saveRecipes() {
+    func saveRecipes(_ recipes: [Recipe]) {
+        savedRecipes = recipes
         insertionCallCount += 1
     }
 }
@@ -35,8 +36,9 @@ class RecipeStore {
 struct LocalRecipeLoader {
     let store: RecipeStore
     
-    func save(_ recipe: Recipe) throws {
+    func save(_ recipes: [Recipe]) throws {
         try store.deleteCachedRecipes()
+        store.saveRecipes(recipes)
     }
 }
 
@@ -50,7 +52,7 @@ struct LocalRecipeCacheTests {
     
     @Test func testNewSaveRequestsDeletionOfOldCachedRecipes() throws {
         let (sut, store) = makeSUT()
-        let uniqueRecipe = makeUniqueRecipe()
+        let uniqueRecipe = [makeUniqueRecipe()]
         
         try sut.save(uniqueRecipe)
         
@@ -59,7 +61,7 @@ struct LocalRecipeCacheTests {
     
     @Test func testCacheDoesNotRequestCacheInsertionOnDeletionError() throws {
         let (sut, store) = makeSUT()
-        let uniqueRecipe = makeUniqueRecipe()
+        let uniqueRecipe = [makeUniqueRecipe()]
         let error = NSError(domain: "Deletion Error", code: 0)
         
         store.stub(.failure(error))
@@ -73,11 +75,20 @@ struct LocalRecipeCacheTests {
     
     @Test func testCacheRequestsSaveUponCacheDeletionSuccess() throws {
         let (sut, store) = makeSUT()
-        let uniqueRecipe = makeUniqueRecipe()
+        let uniqueRecipe = [makeUniqueRecipe()]
         
         try sut.save(uniqueRecipe)
         
         #expect(store.insertionCallCount == 1)
+    }
+    
+    @Test func testCacheSuccessfullySavesRecipes() throws {
+        let (sut, store) = makeSUT()
+        let uniqueRecipes = [makeUniqueRecipe(), makeUniqueRecipe()]
+        
+        try sut.save(uniqueRecipes)
+        
+        #expect(store.savedRecipes == uniqueRecipes)
     }
     
     // MARK: Helpers
