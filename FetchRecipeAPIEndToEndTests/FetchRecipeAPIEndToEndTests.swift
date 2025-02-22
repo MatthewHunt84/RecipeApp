@@ -12,8 +12,7 @@ import Foundation
 @Suite(.timeLimit(.minutes(1)))
 struct FetchRecipeAPIEndToEndTests {
 
-    @Test
-    func testEndToEndServerGETRecipeDataReturnsData() async throws {
+    @Test func testEndToEndServerGETRecipeDataReturnsData() async throws {
         let client = URLSessionHTTPClient()
         let url = try #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"))
         let loader = RemoteRecipeLoader(client: client, url: url)
@@ -24,8 +23,7 @@ struct FetchRecipeAPIEndToEndTests {
         #expect(recipes.count == 63)
     }
     
-    @Test
-    func testEndToEndServerGETRecipeDataMatchesExpectedRecipes() async throws {
+    @Test func testEndToEndServerGETRecipeDataMatchesExpectedRecipes() async throws {
         let client = URLSessionHTTPClient()
         let url = try #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"))
         let loader = RemoteRecipeLoader(client: client, url: url)
@@ -43,7 +41,16 @@ struct FetchRecipeAPIEndToEndTests {
         #expect(recipes[8] == expectedRecipe(at: 8))
         #expect(recipes[9] == expectedRecipe(at: 9))
         #expect(recipes[10] == expectedRecipe(at: 10))
-
+    }
+    
+    @Test func testMalformedDataReturnsError() async throws {
+        let client = URLSessionHTTPClient()
+        let url = try #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes-malformed.json"))
+        let loader = RemoteRecipeLoader(client: client, url: url)
+        
+        await #expect(throws: RemoteRecipeLoader.Error.decodingError) {
+            let _ = try await loader.load()
+        }
     }
     
     // MARK: Helpers
