@@ -13,22 +13,30 @@ class RecipeStore {
     var deletedRecipes: [Recipe] = []
     var savedRecipes: [Recipe] = []
 
-    var stubs: [Result<Recipe, Error>] = []
+    var deletionStubs: [Result<Recipe, Error>] = []
+    var insertionStubs: [Result<Recipe, Error>] = []
     
-    func stub(_ result: Result<Recipe, Error>) {
-        stubs.append(result)
+    func stubDeletionResult(_ result: Result<Recipe, Error>) {
+        deletionStubs.append(result)
+    }
+    
+    func stubInsertionResult(_ result: Result<Recipe, Error>) {
+        insertionStubs.append(result)
     }
     
     func deleteCachedRecipes() throws {
-        if case .failure(let error) = stubs.first {
+        if case .failure(let error) = deletionStubs.first {
             throw error
         }
         deletedRecipes.append(contentsOf: savedRecipes)
         savedRecipes.removeAll()
     }
     
-    func saveRecipes(_ recipes: [Recipe]) {
-        savedRecipes = recipes
+    func insertRecipes(_ recipes: [Recipe]) throws {
+        if case .failure(let error) = insertionStubs.first {
+            throw error
+        }
+        savedRecipes.append(contentsOf: recipes)
     }
 }
 
@@ -37,7 +45,7 @@ struct LocalRecipeLoader {
     
     func save(_ recipes: [Recipe]) throws {
         try store.deleteCachedRecipes()
-        store.saveRecipes(recipes)
+        try store.insertRecipes(recipes)
     }
 }
 
@@ -62,11 +70,11 @@ struct LocalRecipeCacheTests {
     @Test func testDeletionErrorPreventsSavingNewRecipesToCache() throws {
         let (sut, store) = makeSUT()
         let uniqueRecipe = [makeUniqueRecipe()]
-        let error = NSError(domain: "Deletion Error", code: 0)
+        let deletionError = NSError(domain: "Deletion Error", code: 0)
         
-        store.stub(.failure(error))
+        store.stubDeletionResult(.failure(deletionError))
         
-        #expect(throws: error) {
+        #expect(throws: deletionError) {
             try sut.save(uniqueRecipe)
         }
         
@@ -80,6 +88,20 @@ struct LocalRecipeCacheTests {
         try sut.save(uniqueRecipes)
         
         #expect(store.savedRecipes == uniqueRecipes)
+    }
+    
+    @Test func testSaveFailsOnSaveError() throws {
+        let (sut, store) = makeSUT()
+        let uniqueRecipe = [makeUniqueRecipe()]
+        let saveError = NSError(domain: "Save Error", code: 0)
+        
+        store.stubInsertionResult(.failure(saveError))
+        
+        #expect(throws: saveError) {
+            try sut.save(uniqueRecipe)
+        }
+        
+        #expect(store.savedRecipes.isEmpty)
     }
     
     // MARK: Helpers
