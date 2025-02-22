@@ -14,8 +14,7 @@ struct FetchRecipeAPIEndToEndTests {
 
     @Test func testEndToEndServerGETRecipeDataReturnsData() async throws {
         let client = URLSessionHTTPClient()
-        let url = try #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"))
-        let loader = RemoteRecipeLoader(client: client, url: url)
+        let loader = RemoteRecipeLoader(client: client, url: makeValidURL())
         
         let recipes = try await loader.load()
         
@@ -25,8 +24,7 @@ struct FetchRecipeAPIEndToEndTests {
     
     @Test func testEndToEndServerGETRecipeDataMatchesExpectedRecipes() async throws {
         let client = URLSessionHTTPClient()
-        let url = try #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"))
-        let loader = RemoteRecipeLoader(client: client, url: url)
+        let loader = RemoteRecipeLoader(client: client, url: makeValidURL())
         
         let recipes = try await loader.load()
         
@@ -45,7 +43,7 @@ struct FetchRecipeAPIEndToEndTests {
     
     @Test func testMalformedDataReturnsError() async throws {
         let client = URLSessionHTTPClient()
-        let url = try #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes-malformed.json"))
+        let url = makeMalformedDataURL()
         let loader = RemoteRecipeLoader(client: client, url: url)
         
         await #expect(throws: RemoteRecipeLoader.Error.decodingError) {
@@ -54,6 +52,14 @@ struct FetchRecipeAPIEndToEndTests {
     }
     
     // MARK: Helpers
+    
+    func makeValidURL() -> URL {
+        try! #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"))
+    }
+    
+    func makeMalformedDataURL() -> URL {
+        try! #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes-malformed.json"))
+    }
     
     func expectedRecipe(at index: Int) -> Recipe {
         Recipe(cuisine: cuisine(at: index),
