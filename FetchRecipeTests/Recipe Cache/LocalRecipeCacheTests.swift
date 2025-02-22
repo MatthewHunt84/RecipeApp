@@ -9,15 +9,6 @@ import Foundation
 import FetchRecipe
 import Testing
 
-struct LocalRecipeLoader {
-    let store: RecipeStore
-    
-    func save(_ recipes: [Recipe]) throws {
-        try store.deleteCachedRecipes()
-        try store.insertRecipes(recipes)
-    }
-}
-
 struct LocalRecipeCacheTests {
     
     @Test func testCacheInitDoesNotDeleteSavedRecipes() {
