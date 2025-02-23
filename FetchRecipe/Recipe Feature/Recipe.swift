@@ -8,13 +8,13 @@
 import Foundation
 
 public struct Recipe: Codable, Equatable {
-    let cuisine: String
-    let name: String
-    let photoUrlLarge: String?
-    let photoUrlSmall: String?
-    let uuid: String
-    let sourceUrl: String?
-    let youtubeUrl: String?
+    public let cuisine: String
+    public let name: String
+    public let photoUrlLarge: String?
+    public let photoUrlSmall: String?
+    public let uuid: String
+    public let sourceUrl: String?
+    public let youtubeUrl: String?
     
     public init(cuisine: String, name: String, photoUrlLarge: String?, photoUrlSmall: String?, uuid: String, sourceUrl: String?, youtubeUrl: String?) {
         self.cuisine = cuisine

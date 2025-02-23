@@ -30,36 +30,36 @@ struct LocalRecipeCacheTests {
     
     @Test func testDeletionErrorPreventsSavingNewRecipesToCache() throws {
         let (sut, store) = makeSUT()
-        let recipe = [makeUniqueRecipe()]
+        let recipes = makeUniqueRecipes()
         let deletionError = NSError(domain: "Deletion Error", code: 0)
         
         store.stubDeletionResult(.failure(deletionError))
         
         #expect(throws: deletionError) {
-            try sut.save(recipe)
+            try sut.save(recipes.models)
         }
         
         #expect(store.savedRecipes.count == 0)
     }
 
-    @Test func testDeletionSuccessPreceedsSuccessfullySavingRecipes() throws {
+    @Test func testDeletionSuccessPrecedesSuccessfullySavingRecipes() throws {
         let (sut, store) = makeSUT()
-        let recipes = [makeUniqueRecipe(), makeUniqueRecipe()]
+        let recipes = makeUniqueRecipes()
         
-        try sut.save(recipes)
+        try sut.save(recipes.models)
         
-        #expect(store.savedRecipes == recipes)
+        #expect(store.savedRecipes == recipes.local)
     }
-    
+
     @Test func testSaveFailsOnSaveError() throws {
         let (sut, store) = makeSUT()
-        let recipe = [makeUniqueRecipe()]
+        let recipes = makeUniqueRecipes()
         let saveError = NSError(domain: "Save Error", code: 0)
         
         store.stubInsertionResult(.failure(saveError))
         
         #expect(throws: saveError) {
-            try sut.save(recipe)
+            try sut.save(recipes.models)
         }
         
         #expect(store.savedRecipes.isEmpty)
@@ -83,18 +83,32 @@ struct LocalRecipeCacheTests {
                youtubeUrl: nil)
     }
     
+    func makeUniqueRecipes() -> (models: [Recipe], local: [LocalRecipe]) {
+        let models = [makeUniqueRecipe(), makeUniqueRecipe()]
+        let local = models.map { LocalRecipe(
+            cuisine: $0.cuisine,
+            name: $0.name,
+            photoUrlLarge: $0.photoUrlLarge,
+            photoUrlSmall: $0.photoUrlSmall,
+            uuid: $0.uuid,
+            sourceUrl: $0.sourceUrl,
+            youtubeUrl: $0.youtubeUrl)
+        }
+        return (models, local)
+    }
+    
     final class RecipeStoreSpy: RecipeStore {
-        var deletedRecipes: [Recipe] = []
-        var savedRecipes: [Recipe] = []
+        var deletedRecipes: [LocalRecipe] = []
+        var savedRecipes: [LocalRecipe] = []
 
-        private var deletionStubs: [Result<Recipe, Error>] = []
-        private var insertionStubs: [Result<Recipe, Error>] = []
+        private var deletionStubs: [Result<LocalRecipe, Error>] = []
+        private var insertionStubs: [Result<LocalRecipe, Error>] = []
         
-        func stubDeletionResult(_ result: Result<Recipe, Error>) {
+        func stubDeletionResult(_ result: Result<LocalRecipe, Error>) {
             deletionStubs.append(result)
         }
         
-        func stubInsertionResult(_ result: Result<Recipe, Error>) {
+        func stubInsertionResult(_ result: Result<LocalRecipe, Error>) {
             insertionStubs.append(result)
         }
         
@@ -106,7 +120,7 @@ struct LocalRecipeCacheTests {
             savedRecipes.removeAll()
         }
         
-        func insertRecipes(_ recipes: [Recipe]) throws {
+        func insertRecipes(_ recipes: [LocalRecipe]) throws {
             if case .failure(let error) = insertionStubs.first {
                 throw error
             }
@@ -114,5 +128,7 @@ struct LocalRecipeCacheTests {
         }
     }
 }
+
+
 
 
