@@ -19,11 +19,31 @@ public struct LocalRecipeLoader {
         try store.deleteCachedRecipes()
         try store.insertRecipes(recipes.mapToLocalRecipe())
     }
+    
+    public func load() throws -> [Recipe] {
+        try store
+            .retrieveRecipes()
+            .mapToRecipe()
+    }
 }
 
 extension Array where Element == Recipe {
     func mapToLocalRecipe() -> [LocalRecipe] {
         map { LocalRecipe(
+            cuisine: $0.cuisine,
+            name: $0.name,
+            photoUrlLarge: $0.photoUrlLarge,
+            photoUrlSmall: $0.photoUrlSmall,
+            uuid: $0.uuid,
+            sourceUrl: $0.sourceUrl,
+            youtubeUrl: $0.youtubeUrl)
+        }
+    }
+}
+
+extension Array where Element == LocalRecipe {
+    func mapToRecipe() -> [Recipe] {
+        map { Recipe(
             cuisine: $0.cuisine,
             name: $0.name,
             photoUrlLarge: $0.photoUrlLarge,
