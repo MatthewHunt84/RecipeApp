@@ -36,6 +36,16 @@ struct LoadFromCacheTests {
         }
     }
     
+    @Test func testLoadDeliversNoRecipesFromEmptyCache() throws {
+        let (sut, store) = makeSUT()
+        try #require(store.savedRecipes.isEmpty)
+        
+        let recipes = try sut.load()
+        
+        #expect(recipes.isEmpty)
+        
+    }
+    
     func makeSUT() -> (LocalRecipeLoader, RecipeStoreSpy) {
         let store = RecipeStoreSpy()
         let localRecipeLoader = LocalRecipeLoader(store: store)
