@@ -38,7 +38,7 @@ struct LoadFromCacheTests {
         
     }
     
-    @Test func testLoadDeliversRecipesFromCache() throws {
+    @Test func testLoadWithoutErrorSuccessfullyDeliversCachedRecipes() throws {
         let (sut, store) = makeSUT()
         let savedRecipes = makeUniqueRecipes()
         store.stubRetrievalResult(.success(savedRecipes.local))
