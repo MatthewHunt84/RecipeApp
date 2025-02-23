@@ -7,11 +7,39 @@
 
 import Foundation
 
+struct RemoteRecipe: Codable, Equatable {
+    let cuisine: String
+    let name: String
+    let photoUrlLarge: String?
+    let photoUrlSmall: String?
+    let uuid: String
+    let sourceUrl: String?
+    let youtubeUrl: String?
+    
+    init(cuisine: String, name: String, photoUrlLarge: String?, photoUrlSmall: String?, uuid: String, sourceUrl: String?, youtubeUrl: String?) {
+        self.cuisine = cuisine
+        self.name = name
+        self.photoUrlLarge = photoUrlLarge
+        self.photoUrlSmall = photoUrlSmall
+        self.uuid = uuid
+        self.sourceUrl = sourceUrl
+        self.youtubeUrl = youtubeUrl
+    }
+}
+
 struct RecipeMapper {
     
     private static let OK_200 = 200
     
-    static func map(_ data: Data, _ response: URLResponse) throws -> [Recipe] {
+    private struct Root: Codable {
+        let recipes: [RemoteRecipe]
+        
+        public init(recipes: [RemoteRecipe]) {
+            self.recipes = recipes
+        }
+    }
+    
+    static func map(_ data: Data, _ response: URLResponse) throws -> [RemoteRecipe] {
         guard let httpResponse = response as? HTTPURLResponse else {
             throw RemoteRecipeLoader.Error.invalidHTTPResponse
         }
@@ -28,3 +56,9 @@ struct RecipeMapper {
         return root.recipes
     }
 }
+
+
+
+    
+
+

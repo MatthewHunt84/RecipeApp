@@ -141,9 +141,11 @@ struct FetchRecipeTests {
     }
     
     private func stubEmptyData() -> Data {
-        let emptyRecipeData = Root(recipes: [])
-        let data = try! #require(try JSONEncoder().encode(emptyRecipeData))
-        return data
+        return """
+        {
+            "recipes": []
+        }
+        """.data(using: .utf8)!
     }
     
     private func makeRecipe(cuisine: String = "Cuisine",

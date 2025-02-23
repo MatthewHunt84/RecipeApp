@@ -33,15 +33,17 @@ public struct RemoteRecipeLoader: RecipeLoader {
             throw Error.connectivity
         }
         
-        return try RecipeMapper.map(data, response)
+        return try RecipeMapper
+            .map(data, response)
+            .mapToRemoteRecipes()
     }
 }
 
-public struct Root: Codable {
-    let recipes: [Recipe]
-    
-    public init(recipes: [Recipe]) {
-        self.recipes = recipes
+private extension Array where Element == RemoteRecipe {
+    func mapToRemoteRecipes() -> [Recipe] {
+        return map {
+            Recipe(cuisine: $0.cuisine, name: $0.name, photoUrlLarge: $0.photoUrlLarge, photoUrlSmall: $0.photoUrlSmall, uuid: $0.uuid, sourceUrl: $0.sourceUrl, youtubeUrl: $0.youtubeUrl)
+        }
     }
 }
 
