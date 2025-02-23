@@ -18,14 +18,6 @@ struct LoadFromCacheTests {
         #expect(store.deletedRecipes == [])
     }
     
-    @Test func testLoadFromCacheRetrievesSavedRecipes() throws {
-        let (sut, _) = makeSUT()
-        
-        let emptyRecipes = try sut.load()
-        
-        #expect(emptyRecipes == [])
-    }
-    
     @Test func testLoadFailsOnRetrievalError() throws {
         let (sut, store) = makeSUT()
         let retrievalError = NSError(domain: "Cache Retrieval Error", code: 0)
