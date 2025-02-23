@@ -14,7 +14,7 @@ final class RecipeStoreSpy: RecipeStore {
 
     private var deletionStubs: [Result<LocalRecipe, Error>] = []
     private var insertionStubs: [Result<LocalRecipe, Error>] = []
-    private var retrievalStubs: [Result<LocalRecipe, Error>] = []
+    private var retrievalStubs: [Result<[LocalRecipe], Error>] = []
     
     func stubDeletionResult(_ result: Result<LocalRecipe, Error>) {
         deletionStubs.append(result)
@@ -24,8 +24,11 @@ final class RecipeStoreSpy: RecipeStore {
         insertionStubs.append(result)
     }
     
-    func stubRetrievalResult(_ result: Result<LocalRecipe, Error>) {
+    func stubRetrievalResult(_ result: Result<[LocalRecipe], Error>) {
         retrievalStubs.append(result)
+        if case .success(let recipes) = result {
+            savedRecipes.append(contentsOf: recipes)
+        }
     }
     
     func deleteCachedRecipes() throws {

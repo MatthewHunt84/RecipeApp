@@ -46,9 +46,43 @@ struct LoadFromCacheTests {
         
     }
     
+    @Test func testLoadDeliversRecipesFromCache() throws {
+        let (sut, store) = makeSUT()
+        let savedRecipes = makeUniqueRecipes()
+        store.stubRetrievalResult(.success(savedRecipes.local))
+        
+        let recipes = try sut.load()
+        
+        #expect(recipes == savedRecipes.models)
+    }
+    
     func makeSUT() -> (LocalRecipeLoader, RecipeStoreSpy) {
         let store = RecipeStoreSpy()
         let localRecipeLoader = LocalRecipeLoader(store: store)
         return (localRecipeLoader, store)
+    }
+    
+    func makeUniqueLocalRecipe() -> LocalRecipe {
+        LocalRecipe(cuisine: "any",
+               name: "any",
+               photoUrlLarge: nil,
+               photoUrlSmall: nil,
+               uuid: UUID().uuidString,
+               sourceUrl: nil,
+               youtubeUrl: nil)
+    }
+    
+    func makeUniqueRecipes() -> (models: [Recipe], local: [LocalRecipe]) {
+        let local = [makeUniqueLocalRecipe(), makeUniqueLocalRecipe()]
+        let models = local.map { Recipe(
+            cuisine: $0.cuisine,
+            name: $0.name,
+            photoUrlLarge: $0.photoUrlLarge,
+            photoUrlSmall: $0.photoUrlSmall,
+            uuid: $0.uuid,
+            sourceUrl: $0.sourceUrl,
+            youtubeUrl: $0.youtubeUrl)
+        }
+        return (models, local)
     }
 }
