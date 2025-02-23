@@ -1,5 +1,5 @@
 //
-//  LocalRecipeCacheTests.swift
+//  SaveToCacheTests.swift
 //  FetchRecipeTests
 //
 //  Created by Matt Hunt on 2/22/25.
@@ -9,7 +9,7 @@ import Foundation
 import FetchRecipe
 import Testing
 
-struct LocalRecipeCacheTests {
+struct SaveToCacheTests {
     
     @Test func testCacheInitDoesNotDeleteSavedRecipes() {
         let (_, store) = makeSUT()
