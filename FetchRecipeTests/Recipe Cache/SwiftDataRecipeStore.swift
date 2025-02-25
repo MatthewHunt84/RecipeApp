@@ -10,18 +10,11 @@ import FetchRecipe
 import SwiftData
 
 
-@MainActor
-struct SwiftDataStore {
-    
-    let container: ModelContainer
-    let context: ModelContext
-    
-    init() {
-        self.container = try! ModelContainer(for: SwiftDataLocalRecipe.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
-        self.context = container.mainContext
-    }
+@ModelActor
+actor SwiftDataStore {
     
     func retrieveRecipes() throws -> [LocalRecipe] {
+        let context = ModelContext(modelContainer)
         let descriptor = FetchDescriptor<SwiftDataLocalRecipe>()
         let swiftDataModels: [SwiftDataLocalRecipe] = try context.fetch(descriptor)
         return swiftDataModels.map { LocalRecipe(
@@ -39,7 +32,8 @@ struct SwiftDataStore {
 struct SwiftDataRecipeStore {
 
     @Test func retrieveDeliversEmptyRecipeArrayOnEmptyCache() async throws {
-        let sut = await SwiftDataStore()
+        let container = try! ModelContainer(for: SwiftDataLocalRecipe.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let sut = SwiftDataStore(modelContainer: container)
         
         let emptyRecipes = try await sut.retrieveRecipes()
         
