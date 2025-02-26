@@ -39,7 +39,19 @@ struct SwiftDataRecipeStore {
         
         #expect(emptyRecipes.isEmpty)
     }
-
+    
+    @Test func multipleRetrieveCallsHaveNoSideEffectsOnEmptyCache() async throws {
+        let container = try! ModelContainer(for: SwiftDataLocalRecipe.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let sut = SwiftDataStore(modelContainer: container)
+        
+        let emptyRecipes = try await sut.retrieveRecipes()
+        let emptyRecipes2 = try await sut.retrieveRecipes()
+        let emptyRecipes3 = try await sut.retrieveRecipes()
+        
+        #expect(emptyRecipes.isEmpty)
+        #expect(emptyRecipes2.isEmpty)
+        #expect(emptyRecipes3.isEmpty)
+    }
 }
 
 @Model
