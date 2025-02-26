@@ -8,6 +8,7 @@
 import Testing
 import FetchRecipe
 import SwiftData
+import Foundation
 
 
 @ModelActor
@@ -26,6 +27,25 @@ actor SwiftDataStore {
             sourceUrl: $0.sourceUrl,
             youtubeUrl: $0.youtubeUrl)
         }
+    }
+    
+    func insertRecipes(_ recipes: [LocalRecipe]) async throws {
+        let context = ModelContext(modelContainer)
+        let swiftDataModels = recipes.map {
+            SwiftDataLocalRecipe(
+                cuisine: $0.cuisine,
+                name: $0.name,
+                photoUrlLarge: $0.photoUrlLarge,
+                photoUrlSmall: $0.photoUrlSmall,
+                uuid: $0.uuid,
+                sourceUrl: $0.sourceUrl,
+                youtubeUrl: $0.youtubeUrl)
+        }
+        print(swiftDataModels.count)
+        swiftDataModels.forEach { model in
+            context.insert(model)
+        }
+        try context.save()
     }
 }
 
@@ -51,6 +71,35 @@ struct SwiftDataRecipeStore {
         #expect(emptyRecipes.isEmpty)
         #expect(emptyRecipes2.isEmpty)
         #expect(emptyRecipes3.isEmpty)
+    }
+    
+    @Test func retrieveAfterInsertingToEmptyCacheDeliversInsertedRecipes() async throws {
+        let container = try! ModelContainer(for: SwiftDataLocalRecipe.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let sut = SwiftDataStore(modelContainer: container)
+        let recipe1 = LocalRecipe(
+            cuisine: "Any",
+            name: "Any",
+            photoUrlLarge: nil,
+            photoUrlSmall: nil,
+            uuid: UUID().uuidString,
+            sourceUrl: nil,
+            youtubeUrl: nil)
+        
+        let recipe2 = LocalRecipe(
+            cuisine: "Any",
+            name: "Any",
+            photoUrlLarge: nil,
+            photoUrlSmall: nil,
+            uuid: UUID().uuidString,
+            sourceUrl: nil,
+            youtubeUrl: nil)
+        
+        let insertedRecipes = [recipe1, recipe2]
+        
+        try await sut.insertRecipes(insertedRecipes)
+        let retrievedRecipes = try await sut.retrieveRecipes()
+        
+        #expect(retrievedRecipes.sorted() == insertedRecipes.sorted())
     }
 }
 

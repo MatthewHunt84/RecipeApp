@@ -27,3 +27,9 @@ public struct LocalRecipe: Codable, Equatable {
     }
 }
 
+extension LocalRecipe: Comparable {
+    public static func < (lhs: LocalRecipe, rhs: LocalRecipe) -> Bool {
+        lhs.uuid < rhs.uuid
+    }
+}
+
