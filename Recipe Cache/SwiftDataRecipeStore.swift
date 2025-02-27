@@ -90,8 +90,7 @@ struct SwiftDataRecipeStore {
     }
     
     @Test func multipleRetrieveCallsHaveNoSideEffectsOnEmptyCache() async throws {
-        let container = try! ModelContainer(for: SwiftDataLocalRecipe.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
-        let sut = SwiftDataStore(modelContainer: container)
+        let sut = makeSUT()
         
         let emptyRecipes = try await sut.retrieveRecipes()
         let emptyRecipes2 = try await sut.retrieveRecipes()
@@ -104,25 +103,8 @@ struct SwiftDataRecipeStore {
     
     @Test func retrieveAfterInsertingToEmptyCacheDeliversInsertedRecipes() async throws {
         let sut = makeSUT()
-        let recipe1 = LocalRecipe(
-            cuisine: "Any",
-            name: "Any",
-            photoUrlLarge: nil,
-            photoUrlSmall: nil,
-            uuid: UUID().uuidString,
-            sourceUrl: nil,
-            youtubeUrl: nil)
         
-        let recipe2 = LocalRecipe(
-            cuisine: "Any",
-            name: "Any",
-            photoUrlLarge: nil,
-            photoUrlSmall: nil,
-            uuid: UUID().uuidString,
-            sourceUrl: nil,
-            youtubeUrl: nil)
-        
-        let insertedRecipes = [recipe1, recipe2]
+        let insertedRecipes = makeLocalRecipes()
         
         try await sut.insertRecipes(insertedRecipes)
         let retrievedRecipes = try await sut.retrieveRecipes()
@@ -136,5 +118,24 @@ struct SwiftDataRecipeStore {
         let container = try! ModelContainer(for: SwiftDataLocalRecipe.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
         let sut = SwiftDataStore(modelContainer: container)
         return sut
+    }
+    
+    func makeLocalRecipe() -> LocalRecipe {
+        LocalRecipe(
+            cuisine: "Any",
+            name: "Any",
+            photoUrlLarge: nil,
+            photoUrlSmall: nil,
+            uuid: UUID().uuidString,
+            sourceUrl: nil,
+            youtubeUrl: nil)
+    }
+    
+    func makeLocalRecipes() -> [LocalRecipe] {
+        
+        let numberOfRecipes = Int.random(in: 1...10)
+        let recipes = Array(repeating: makeLocalRecipe(), count: numberOfRecipes)
+        
+        return recipes
     }
 }
