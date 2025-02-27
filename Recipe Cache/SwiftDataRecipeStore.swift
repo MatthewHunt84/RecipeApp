@@ -82,8 +82,7 @@ actor SwiftDataStore {
 struct SwiftDataRecipeStore {
 
     @Test func retrieveDeliversEmptyRecipeArrayOnEmptyCache() async throws {
-        let container = try! ModelContainer(for: SwiftDataLocalRecipe.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
-        let sut = SwiftDataStore(modelContainer: container)
+        let sut = makeSUT()
         
         let emptyRecipes = try await sut.retrieveRecipes()
         
@@ -104,8 +103,7 @@ struct SwiftDataRecipeStore {
     }
     
     @Test func retrieveAfterInsertingToEmptyCacheDeliversInsertedRecipes() async throws {
-        let container = try! ModelContainer(for: SwiftDataLocalRecipe.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
-        let sut = SwiftDataStore(modelContainer: container)
+        let sut = makeSUT()
         let recipe1 = LocalRecipe(
             cuisine: "Any",
             name: "Any",
@@ -130,5 +128,13 @@ struct SwiftDataRecipeStore {
         let retrievedRecipes = try await sut.retrieveRecipes()
         
         #expect(retrievedRecipes.sorted() == insertedRecipes.sorted())
+    }
+    
+    // MARK: Helpers
+    
+    func makeSUT() -> SwiftDataStore {
+        let container = try! ModelContainer(for: SwiftDataLocalRecipe.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let sut = SwiftDataStore(modelContainer: container)
+        return sut
     }
 }
