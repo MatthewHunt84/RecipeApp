@@ -10,6 +10,53 @@ import FetchRecipe
 import SwiftData
 import Foundation
 
+@Model
+class SwiftDataLocalRecipe {
+     var cuisine: String
+     var name: String
+     var photoUrlLarge: String?
+     var photoUrlSmall: String?
+     var uuid: String
+     var sourceUrl: String?
+     var youtubeUrl: String?
+    
+    init(cuisine: String,
+         name: String,
+         photoUrlLarge: String?,
+         photoUrlSmall: String?,
+         uuid: String,
+         sourceUrl: String?,
+         youtubeUrl: String?) {
+        self.cuisine = cuisine
+        self.name = name
+        self.photoUrlLarge = photoUrlLarge
+        self.photoUrlSmall = photoUrlSmall
+        self.uuid = uuid
+        self.sourceUrl = sourceUrl
+        self.youtubeUrl = youtubeUrl
+    }
+    
+    var local: LocalRecipe {
+        LocalRecipe(
+            cuisine: cuisine,
+            name: name,
+            photoUrlLarge: photoUrlLarge,
+            photoUrlSmall: photoUrlSmall,
+            uuid: uuid,
+            sourceUrl: sourceUrl,
+            youtubeUrl: youtubeUrl)
+    }
+    
+    init(_ localRecipe: LocalRecipe) {
+        self.cuisine = localRecipe.cuisine
+        self.name = localRecipe.name
+        self.photoUrlLarge = localRecipe.photoUrlLarge
+        self.photoUrlSmall = localRecipe.photoUrlSmall
+        self.uuid = localRecipe.uuid
+        self.sourceUrl = localRecipe.sourceUrl
+        self.youtubeUrl = localRecipe.youtubeUrl
+    }
+}
 
 @ModelActor
 actor SwiftDataStore {
@@ -18,29 +65,12 @@ actor SwiftDataStore {
         let context = ModelContext(modelContainer)
         let descriptor = FetchDescriptor<SwiftDataLocalRecipe>()
         let swiftDataModels: [SwiftDataLocalRecipe] = try context.fetch(descriptor)
-        return swiftDataModels.map { LocalRecipe(
-            cuisine: $0.cuisine,
-            name: $0.name,
-            photoUrlLarge: $0.photoUrlLarge,
-            photoUrlSmall: $0.photoUrlSmall,
-            uuid: $0.uuid,
-            sourceUrl: $0.sourceUrl,
-            youtubeUrl: $0.youtubeUrl)
-        }
+        return swiftDataModels.map { $0.local }
     }
     
     func insertRecipes(_ recipes: [LocalRecipe]) async throws {
         let context = ModelContext(modelContainer)
-        let swiftDataModels = recipes.map {
-            SwiftDataLocalRecipe(
-                cuisine: $0.cuisine,
-                name: $0.name,
-                photoUrlLarge: $0.photoUrlLarge,
-                photoUrlSmall: $0.photoUrlSmall,
-                uuid: $0.uuid,
-                sourceUrl: $0.sourceUrl,
-                youtubeUrl: $0.youtubeUrl)
-        }
+        let swiftDataModels = recipes.map(SwiftDataLocalRecipe.init)
         print(swiftDataModels.count)
         swiftDataModels.forEach { model in
             context.insert(model)
@@ -100,26 +130,5 @@ struct SwiftDataRecipeStore {
         let retrievedRecipes = try await sut.retrieveRecipes()
         
         #expect(retrievedRecipes.sorted() == insertedRecipes.sorted())
-    }
-}
-
-@Model
-class SwiftDataLocalRecipe {
-     var cuisine: String
-     var name: String
-     var photoUrlLarge: String?
-     var photoUrlSmall: String?
-     var uuid: String
-     var sourceUrl: String?
-     var youtubeUrl: String?
-    
-    init(cuisine: String, name: String, photoUrlLarge: String?, photoUrlSmall: String?, uuid: String, sourceUrl: String?, youtubeUrl: String?) {
-        self.cuisine = cuisine
-        self.name = name
-        self.photoUrlLarge = photoUrlLarge
-        self.photoUrlSmall = photoUrlSmall
-        self.uuid = uuid
-        self.sourceUrl = sourceUrl
-        self.youtubeUrl = youtubeUrl
     }
 }
