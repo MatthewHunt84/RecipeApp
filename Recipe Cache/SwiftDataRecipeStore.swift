@@ -81,7 +81,7 @@ actor SwiftDataStore {
 
 struct SwiftDataRecipeStore {
 
-    @Test func retrieveDeliversEmptyRecipeArrayOnEmptyCache() async throws {
+    @Test func retrieveRecipes_withEmptyCache_shouldReturnEmptyArray() async throws {
         let sut = makeSUT()
         
         let emptyRecipes = try await sut.retrieveRecipes()
@@ -89,7 +89,7 @@ struct SwiftDataRecipeStore {
         #expect(emptyRecipes.isEmpty)
     }
     
-    @Test func multipleRetrieveCallsHaveNoSideEffectsOnEmptyCache() async throws {
+    @Test func retrieveRecipes_multipleTimesWithEmptyCache_shouldReturnEmptyArrays() async throws {
         let sut = makeSUT()
         
         let emptyRecipes = try await sut.retrieveRecipes()
@@ -101,7 +101,7 @@ struct SwiftDataRecipeStore {
         #expect(emptyRecipes3.isEmpty)
     }
     
-    @Test func retrieveAfterInsertingToEmptyCacheDeliversInsertedRecipes() async throws {
+    @Test func retrieveRecipes_withCachedRecipes_shouldReturnCachedRecipes() async throws {
         let sut = makeSUT()
         
         let insertedRecipes = makeLocalRecipes()
@@ -112,7 +112,7 @@ struct SwiftDataRecipeStore {
         #expect(retrievedRecipes.sorted() == insertedRecipes.sorted())
     }
     
-    @Test func retrieveFromCacheTwiceHasNoSideEffects() async throws {
+    @Test func retrieveRecipes_multipleTimesWithCachedRecipes_shouldReturnCachedRecipes() async throws {
         let sut = makeSUT()
         let insertedRecipes = makeLocalRecipes()
         
