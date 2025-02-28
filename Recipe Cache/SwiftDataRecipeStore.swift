@@ -112,6 +112,17 @@ struct SwiftDataRecipeStore {
         #expect(retrievedRecipes.sorted() == insertedRecipes.sorted())
     }
     
+    @Test func retrieveFromCacheTwiceHasNoSideEffects() async throws {
+        let sut = makeSUT()
+        let insertedRecipes = makeLocalRecipes()
+        
+        try await sut.insertRecipes(insertedRecipes)
+        let firstRetrievedRecipes = try await sut.retrieveRecipes()
+        let secondRetrievedRecipes = try await sut.retrieveRecipes()
+        
+        #expect(firstRetrievedRecipes.sorted() == secondRetrievedRecipes.sorted())
+    }
+    
     // MARK: Helpers
     
     func makeSUT() -> SwiftDataStore {
