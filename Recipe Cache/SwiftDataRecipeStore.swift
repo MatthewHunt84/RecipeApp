@@ -143,11 +143,11 @@ struct SwiftDataRecipeStore {
     @Test func insertRecipes_withDuplicateRecipes_shouldNotInsertDuplicates() async throws {
         let sut = makeSUT()
         let recipesWithDuplicate = makeLocalRecipesWithDuplicates()
+        try #require(recipesWithDuplicate.count == 2)
         
         try await sut.insertRecipes(recipesWithDuplicate)
         let retrievedRecipes = try await sut.retrieveRecipes()
         
-        #expect(recipesWithDuplicate.count == 2)
         #expect(retrievedRecipes.count ==  1)
     }
     
@@ -173,7 +173,7 @@ struct SwiftDataRecipeStore {
     func makeLocalRecipes() -> [LocalRecipe] {
         (0..<Int.random(in: 1...10)).map { _ in makeLocalRecipe() }
     }
-    
+
     func makeLocalRecipesWithDuplicates() -> [LocalRecipe] {
         let originalRecipe = makeLocalRecipe()
         let duplicateRecipe = LocalRecipe(
