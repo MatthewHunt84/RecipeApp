@@ -82,6 +82,7 @@ actor SwiftDataStore {
     }
 }
 
+@Suite(.serialized)
 struct SwiftDataRecipeStore {
 
     @Test func retrieveRecipes_withEmptyCache_shouldReturnEmptyArray() async throws {
