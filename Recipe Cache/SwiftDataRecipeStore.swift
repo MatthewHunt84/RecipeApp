@@ -59,16 +59,16 @@ class SwiftDataLocalRecipe {
 }
 
 @ModelActor
-actor SwiftDataStore {
+actor SwiftDataStore: RecipeStore {
     
-    func retrieveRecipes() throws -> [LocalRecipe] {
+    func retrieveRecipes() async throws -> [LocalRecipe] {
         let descriptor = FetchDescriptor<SwiftDataLocalRecipe>()
         let swiftDataModels: [SwiftDataLocalRecipe] = try modelContext.fetch(descriptor)
         return swiftDataModels.map { $0.local }
     }
     
     func insertRecipes(_ recipes: [LocalRecipe]) async throws {
-        try deleteCachedRecipes()
+        try await deleteCachedRecipes()
         let swiftDataModels = recipes.map(SwiftDataLocalRecipe.init)
         swiftDataModels.forEach { model in
             modelContext.insert(model)
@@ -76,7 +76,7 @@ actor SwiftDataStore {
         try modelContext.save()
     }
     
-    func deleteCachedRecipes() throws {
+    func deleteCachedRecipes() async throws {
         try modelContext.delete(model: SwiftDataLocalRecipe.self)
         try modelContext.save()
     }

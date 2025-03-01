@@ -17,49 +17,49 @@ struct SaveToCacheTests {
         #expect(store.deletedRecipes == [])
     }
     
-    @Test func testSaveNewRecipeRequestsDeletionOfCachedRecipes() throws {
+    @Test func testSaveNewRecipeRequestsDeletionOfCachedRecipes() async throws {
         let (sut, store) = makeSUT()
         let recipe1 = [makeUniqueRecipe()]
         let recipe2 = [makeUniqueRecipe()]
         
-        try sut.save(recipe1)
-        try sut.save(recipe2)
+        try await sut.save(recipe1)
+        try await sut.save(recipe2)
         
         #expect(store.deletedRecipes.count == 1)
     }
     
-    @Test func testDeletionErrorPreventsSavingNewRecipesToCache() throws {
+    @Test func testDeletionErrorPreventsSavingNewRecipesToCache() async throws {
         let (sut, store) = makeSUT()
         let recipes = makeUniqueRecipes()
         let deletionError = NSError(domain: "Deletion Error", code: 0)
         
         store.stubDeletionResult(.failure(deletionError))
         
-        #expect(throws: deletionError) {
-            try sut.save(recipes.models)
+        await #expect(throws: deletionError) {
+            try await sut.save(recipes.models)
         }
         
         #expect(store.savedRecipes.count == 0)
     }
 
-    @Test func testDeletionSuccessPrecedesSuccessfullySavingRecipes() throws {
+    @Test func testDeletionSuccessPrecedesSuccessfullySavingRecipes() async throws {
         let (sut, store) = makeSUT()
         let recipes = makeUniqueRecipes()
         
-        try sut.save(recipes.models)
+        try await sut.save(recipes.models)
         
         #expect(store.savedRecipes == recipes.local)
     }
 
-    @Test func testSaveFailsOnSaveError() throws {
+    @Test func testSaveFailsOnSaveError() async throws {
         let (sut, store) = makeSUT()
         let recipes = makeUniqueRecipes()
         let saveError = NSError(domain: "Save Error", code: 0)
         
         store.stubInsertionResult(.failure(saveError))
         
-        #expect(throws: saveError) {
-            try sut.save(recipes.models)
+        await #expect(throws: saveError) {
+            try await sut.save(recipes.models)
         }
         
         #expect(store.savedRecipes.isEmpty)

@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol RecipeStore {
-    func deleteCachedRecipes() throws
-    func insertRecipes(_ recipes: [LocalRecipe]) throws
-    func retrieveRecipes() throws -> [LocalRecipe]
+    func deleteCachedRecipes() async throws
+    func insertRecipes(_ recipes: [LocalRecipe]) async throws
+    func retrieveRecipes() async throws -> [LocalRecipe]
 }

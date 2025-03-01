@@ -18,32 +18,32 @@ struct LoadFromCacheTests {
         #expect(store.deletedRecipes == [])
     }
     
-    @Test func testLoadFailsOnRetrievalError() throws {
+    @Test func testLoadFailsOnRetrievalError() async throws {
         let (sut, store) = makeSUT()
         let retrievalError = NSError(domain: "Cache Retrieval Error", code: 0)
         store.stubRetrievalResult(.failure(retrievalError))
         
-        #expect(throws: retrievalError) {
-            let _ = try sut.load()
+        await #expect(throws: retrievalError) {
+            let _ = try await sut.load()
         }
     }
     
-    @Test func testLoadDeliversNoRecipesFromEmptyCache() throws {
+    @Test func testLoadDeliversNoRecipesFromEmptyCache() async throws {
         let (sut, store) = makeSUT()
         try #require(store.savedRecipes.isEmpty)
         
-        let recipes = try sut.load()
+        let recipes = try await sut.load()
         
         #expect(recipes.isEmpty)
         
     }
     
-    @Test func testLoadWithoutErrorSuccessfullyDeliversCachedRecipes() throws {
+    @Test func testLoadWithoutErrorSuccessfullyDeliversCachedRecipes() async throws {
         let (sut, store) = makeSUT()
         let savedRecipes = makeUniqueRecipes()
         store.stubRetrievalResult(.success(savedRecipes.local))
         
-        let recipes = try sut.load()
+        let recipes = try await sut.load()
         
         #expect(recipes == savedRecipes.models)
     }

@@ -15,13 +15,13 @@ public struct LocalRecipeLoader {
         self.store = store
     }
     
-    public func save(_ recipes: [Recipe]) throws {
-        try store.deleteCachedRecipes()
-        try store.insertRecipes(recipes.mapToLocalRecipe())
+    public func save(_ recipes: [Recipe]) async throws {
+        try await store.deleteCachedRecipes()
+        try await store.insertRecipes(recipes.mapToLocalRecipe())
     }
     
-    public func load() throws -> [Recipe] {
-        try store
+    public func load() async throws -> [Recipe] {
+        try await store
             .retrieveRecipes()
             .mapToRecipe()
     }
