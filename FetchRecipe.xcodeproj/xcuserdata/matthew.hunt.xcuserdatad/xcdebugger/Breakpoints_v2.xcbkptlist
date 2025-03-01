@@ -48,5 +48,21 @@
             landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3CC7713C-00EE-4A6E-8030-9F154A8C35AC"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../../var/folders/yv/df66r0rj00z_gsq92gzpqkvsvdnrrv/T/swift-generated-sources/@__swiftmacro_16FetchRecipeTests0031SwiftDataRecipeStoreswift_yFFIifMX128_14_6expectfMf_.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2"
+            endingLineNumber = "2"
+            landmarkName = "retrieveRecipes_withInvalidData_shouldThrow()"
+            landmarkType = "37">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

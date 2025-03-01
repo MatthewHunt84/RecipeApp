@@ -62,20 +62,18 @@ class SwiftDataLocalRecipe {
 actor SwiftDataStore {
     
     func retrieveRecipes() throws -> [LocalRecipe] {
-        let context = ModelContext(modelContainer)
         let descriptor = FetchDescriptor<SwiftDataLocalRecipe>()
-        let swiftDataModels: [SwiftDataLocalRecipe] = try context.fetch(descriptor)
+        let swiftDataModels: [SwiftDataLocalRecipe] = try modelContext.fetch(descriptor)
         return swiftDataModels.map { $0.local }
     }
     
     func insertRecipes(_ recipes: [LocalRecipe]) async throws {
-        let context = ModelContext(modelContainer)
         let swiftDataModels = recipes.map(SwiftDataLocalRecipe.init)
         print(swiftDataModels.count)
         swiftDataModels.forEach { model in
-            context.insert(model)
+            modelContext.insert(model)
         }
-        try context.save()
+        try modelContext.save()
     }
 }
 
