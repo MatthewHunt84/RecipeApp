@@ -16,7 +16,7 @@ class SwiftDataLocalRecipe {
     var name: String
     var photoUrlLarge: String?
     var photoUrlSmall: String?
-    var uuid: String
+    @Attribute(.unique) var uuid: String
     var sourceUrl: String?
     var youtubeUrl: String?
     
@@ -70,7 +70,6 @@ actor SwiftDataStore {
     func insertRecipes(_ recipes: [LocalRecipe]) async throws {
         try deleteCachedRecipes()
         let swiftDataModels = recipes.map(SwiftDataLocalRecipe.init)
-        print(swiftDataModels.count)
         swiftDataModels.forEach { model in
             modelContext.insert(model)
         }
@@ -118,6 +117,7 @@ struct SwiftDataRecipeStore {
     
     @Test func retrieveRecipes_multipleTimesWithCachedRecipes_shouldReturnCachedRecipes() async throws {
         let sut = makeSUT()
+        
         let insertedRecipes = makeLocalRecipes()
         
         try await sut.insertRecipes(insertedRecipes)
@@ -136,7 +136,18 @@ struct SwiftDataRecipeStore {
         try await sut.insertRecipes(secondRecipes)
         let storedRecipes = try await sut.retrieveRecipes()
         
-        #expect(storedRecipes ==  secondRecipes)
+        #expect(storedRecipes.sorted() == secondRecipes.sorted())
+    }
+    
+    @Test func insertRecipes_withDuplicateRecipes_shouldNotInsertDuplicates() async throws {
+        let sut = makeSUT()
+        let recipesWithDuplicate = makeLocalRecipesWithDuplicates()
+        
+        try await sut.insertRecipes(recipesWithDuplicate)
+        let retrievedRecipes = try await sut.retrieveRecipes()
+        
+        #expect(recipesWithDuplicate.count == 2)
+        #expect(retrievedRecipes.count ==  1)
     }
     
     // MARK: Helpers
@@ -159,10 +170,20 @@ struct SwiftDataRecipeStore {
     }
     
     func makeLocalRecipes() -> [LocalRecipe] {
+        (0..<Int.random(in: 1...10)).map { _ in makeLocalRecipe() }
+    }
+    
+    func makeLocalRecipesWithDuplicates() -> [LocalRecipe] {
+        let originalRecipe = makeLocalRecipe()
+        let duplicateRecipe = LocalRecipe(
+            cuisine: originalRecipe.cuisine,
+            name: originalRecipe.cuisine,
+            photoUrlLarge: originalRecipe.photoUrlLarge,
+            photoUrlSmall: originalRecipe.photoUrlSmall,
+            uuid: originalRecipe.uuid,
+            sourceUrl: originalRecipe.sourceUrl,
+            youtubeUrl: originalRecipe.youtubeUrl)
         
-        let numberOfRecipes = Int.random(in: 1...10)
-        let recipes = Array(repeating: makeLocalRecipe(), count: numberOfRecipes)
-        
-        return recipes
+        return [originalRecipe, duplicateRecipe]
     }
 }
