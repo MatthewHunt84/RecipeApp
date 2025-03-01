@@ -12,13 +12,13 @@ import Foundation
 
 @Model
 class SwiftDataLocalRecipe {
-     var cuisine: String
-     var name: String
-     var photoUrlLarge: String?
-     var photoUrlSmall: String?
-     var uuid: String
-     var sourceUrl: String?
-     var youtubeUrl: String?
+    var cuisine: String
+    var name: String
+    var photoUrlLarge: String?
+    var photoUrlSmall: String?
+    var uuid: String
+    var sourceUrl: String?
+    var youtubeUrl: String?
     
     init(cuisine: String,
          name: String,
@@ -68,11 +68,17 @@ actor SwiftDataStore {
     }
     
     func insertRecipes(_ recipes: [LocalRecipe]) async throws {
+        try deleteCachedRecipes()
         let swiftDataModels = recipes.map(SwiftDataLocalRecipe.init)
         print(swiftDataModels.count)
         swiftDataModels.forEach { model in
             modelContext.insert(model)
         }
+        try modelContext.save()
+    }
+    
+    func deleteCachedRecipes() throws {
+        try modelContext.delete(model: SwiftDataLocalRecipe.self)
         try modelContext.save()
     }
 }
@@ -119,6 +125,18 @@ struct SwiftDataRecipeStore {
         let secondRetrievedRecipes = try await sut.retrieveRecipes()
         
         #expect(firstRetrievedRecipes.sorted() == secondRetrievedRecipes.sorted())
+    }
+    
+    @Test func insertRecipes_overridesPreviouslyInsertedRecipes() async throws {
+        let sut = makeSUT()
+        let firstRecipes = makeLocalRecipes()
+        let secondRecipes = makeLocalRecipes()
+        
+        try await sut.insertRecipes(firstRecipes)
+        try await sut.insertRecipes(secondRecipes)
+        let storedRecipes = try await sut.retrieveRecipes()
+        
+        #expect(storedRecipes ==  secondRecipes)
     }
     
     // MARK: Helpers
