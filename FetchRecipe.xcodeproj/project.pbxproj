@@ -56,11 +56,6 @@
 			path = "Recipe API";
 			sourceTree = "<group>";
 		};
-		F4CEE8902D590A1900A69385 /* FetchRecipeTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FetchRecipeTests;
-			sourceTree = "<group>";
-		};
 		F4F7159A2D698D4200ADA2A1 /* FetchRecipeAPIEndToEndTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -100,10 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				F41F0F132D5715860098ECED /* FetchRecipe */,
-				F4CEE8902D590A1900A69385 /* FetchRecipeTests */,
-				F4BB7C532D6F4F540063FF7E /* FetchRecipeTestPlan.xctestplan */,
-				F4BB7C632D6F4FE10063FF7E /* Recipe API */,
-				F4BB7C5C2D6F4FDD0063FF7E /* Recipe Cache */,
+				F434B8C82D788A8100B5ACE3 /* FetchRecipeTests */,
 				F4F7159A2D698D4200ADA2A1 /* FetchRecipeAPIEndToEndTests */,
 				F41F0F122D5715860098ECED /* Products */,
 			);
@@ -117,6 +109,16 @@
 				F4F715992D698D4200ADA2A1 /* FetchRecipeAPIEndToEndTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		F434B8C82D788A8100B5ACE3 /* FetchRecipeTests */ = {
+			isa = PBXGroup;
+			children = (
+				F4BB7C632D6F4FE10063FF7E /* Recipe API */,
+				F4BB7C5C2D6F4FDD0063FF7E /* Recipe Cache */,
+				F4BB7C532D6F4F540063FF7E /* FetchRecipeTestPlan.xctestplan */,
+			);
+			path = FetchRecipeTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -160,7 +162,6 @@
 			fileSystemSynchronizedGroups = (
 				F4BB7C5C2D6F4FDD0063FF7E /* Recipe Cache */,
 				F4BB7C632D6F4FE10063FF7E /* Recipe API */,
-				F4CEE8902D590A1900A69385 /* FetchRecipeTests */,
 			);
 			name = FetchRecipeTests;
 			packageProductDependencies = (
