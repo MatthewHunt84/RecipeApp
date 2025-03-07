@@ -6,11 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		F42E5FDA2D7B30E800CD9F81 /* SharedTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42E5FD92D7B30E800CD9F81 /* SharedTestHelpers.swift */; };
-		F42E5FDB2D7B30E800CD9F81 /* SharedTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42E5FD92D7B30E800CD9F81 /* SharedTestHelpers.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		F434B8D12D788BD100B5ACE3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -37,11 +32,10 @@
 
 /* Begin PBXFileReference section */
 		F41F0F112D5715860098ECED /* FetchRecipe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FetchRecipe.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F42E5FD92D7B30E800CD9F81 /* SharedTestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTestHelpers.swift; sourceTree = "<group>"; };
-		F434B8CD2D788BD100B5ACE3 /* FetchRecipeIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FetchRecipeIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F434B8CD2D788BD100B5ACE3 /* FetchRecipeCacheIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FetchRecipeCacheIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4BB7C532D6F4F540063FF7E /* FetchRecipeTestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FetchRecipeTestPlan.xctestplan; sourceTree = "<group>"; };
 		F4CD33E62D79F3F300E82485 /* FetchRecipeAPIEndToEndTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FetchRecipeAPIEndToEndTests.xctestplan; sourceTree = "<group>"; };
-		F4CD33EB2D79F4E600E82485 /* FetchRecipeIntegrationTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FetchRecipeIntegrationTests.xctestplan; sourceTree = "<group>"; };
+		F4CD33EB2D79F4E600E82485 /* FetchRecipeCacheIntegrationTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FetchRecipeCacheIntegrationTests.xctestplan; sourceTree = "<group>"; };
 		F4CEE88F2D590A1900A69385 /* FetchRecipeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FetchRecipeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4F715992D698D4200ADA2A1 /* FetchRecipeAPIEndToEndTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FetchRecipeAPIEndToEndTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -52,9 +46,9 @@
 			path = FetchRecipe;
 			sourceTree = "<group>";
 		};
-		F434B8CE2D788BD100B5ACE3 /* FetchRecipeIntegrationTests */ = {
+		F434B8CE2D788BD100B5ACE3 /* FetchRecipeCacheIntegrationTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FetchRecipeIntegrationTests;
+			path = FetchRecipeCacheIntegrationTests;
 			sourceTree = "<group>";
 		};
 		F4BB7C5C2D6F4FDD0063FF7E /* Recipe Cache */ = {
@@ -109,13 +103,13 @@
 		F41F0F082D5715860098ECED = {
 			isa = PBXGroup;
 			children = (
-				F4CD33EB2D79F4E600E82485 /* FetchRecipeIntegrationTests.xctestplan */,
+				F4CD33EB2D79F4E600E82485 /* FetchRecipeCacheIntegrationTests.xctestplan */,
 				F4BB7C532D6F4F540063FF7E /* FetchRecipeTestPlan.xctestplan */,
 				F4CD33E62D79F3F300E82485 /* FetchRecipeAPIEndToEndTests.xctestplan */,
 				F41F0F132D5715860098ECED /* FetchRecipe */,
 				F434B8C82D788A8100B5ACE3 /* FetchRecipeTests */,
 				F4F7159A2D698D4200ADA2A1 /* FetchRecipeAPIEndToEndTests */,
-				F434B8CE2D788BD100B5ACE3 /* FetchRecipeIntegrationTests */,
+				F434B8CE2D788BD100B5ACE3 /* FetchRecipeCacheIntegrationTests */,
 				F41F0F122D5715860098ECED /* Products */,
 			);
 			sourceTree = "<group>";
@@ -126,23 +120,14 @@
 				F41F0F112D5715860098ECED /* FetchRecipe.app */,
 				F4CEE88F2D590A1900A69385 /* FetchRecipeTests.xctest */,
 				F4F715992D698D4200ADA2A1 /* FetchRecipeAPIEndToEndTests.xctest */,
-				F434B8CD2D788BD100B5ACE3 /* FetchRecipeIntegrationTests.xctest */,
+				F434B8CD2D788BD100B5ACE3 /* FetchRecipeCacheIntegrationTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		F42E5FD82D7B30BB00CD9F81 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				F42E5FD92D7B30E800CD9F81 /* SharedTestHelpers.swift */,
-			);
-			path = Helpers;
 			sourceTree = "<group>";
 		};
 		F434B8C82D788A8100B5ACE3 /* FetchRecipeTests */ = {
 			isa = PBXGroup;
 			children = (
-				F42E5FD82D7B30BB00CD9F81 /* Helpers */,
 				F4BB7C632D6F4FE10063FF7E /* Recipe API */,
 				F4BB7C5C2D6F4FDD0063FF7E /* Recipe Cache */,
 			);
@@ -174,9 +159,9 @@
 			productReference = F41F0F112D5715860098ECED /* FetchRecipe.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F434B8CC2D788BD100B5ACE3 /* FetchRecipeIntegrationTests */ = {
+		F434B8CC2D788BD100B5ACE3 /* FetchRecipeCacheIntegrationTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F434B8D32D788BD100B5ACE3 /* Build configuration list for PBXNativeTarget "FetchRecipeIntegrationTests" */;
+			buildConfigurationList = F434B8D32D788BD100B5ACE3 /* Build configuration list for PBXNativeTarget "FetchRecipeCacheIntegrationTests" */;
 			buildPhases = (
 				F434B8C92D788BD100B5ACE3 /* Sources */,
 				F434B8CA2D788BD100B5ACE3 /* Frameworks */,
@@ -188,13 +173,13 @@
 				F434B8D22D788BD100B5ACE3 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				F434B8CE2D788BD100B5ACE3 /* FetchRecipeIntegrationTests */,
+				F434B8CE2D788BD100B5ACE3 /* FetchRecipeCacheIntegrationTests */,
 			);
-			name = FetchRecipeIntegrationTests;
+			name = FetchRecipeCacheIntegrationTests;
 			packageProductDependencies = (
 			);
 			productName = FetchRecipeIntegrationTests;
-			productReference = F434B8CD2D788BD100B5ACE3 /* FetchRecipeIntegrationTests.xctest */;
+			productReference = F434B8CD2D788BD100B5ACE3 /* FetchRecipeCacheIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		F4CEE88E2D590A1900A69385 /* FetchRecipeTests */ = {
@@ -288,7 +273,7 @@
 				F41F0F102D5715860098ECED /* FetchRecipe */,
 				F4CEE88E2D590A1900A69385 /* FetchRecipeTests */,
 				F4F715982D698D4200ADA2A1 /* FetchRecipeAPIEndToEndTests */,
-				F434B8CC2D788BD100B5ACE3 /* FetchRecipeIntegrationTests */,
+				F434B8CC2D788BD100B5ACE3 /* FetchRecipeCacheIntegrationTests */,
 			);
 		};
 /* End PBXProject section */
@@ -336,7 +321,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F42E5FDB2D7B30E800CD9F81 /* SharedTestHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,7 +328,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F42E5FDA2D7B30E800CD9F81 /* SharedTestHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -727,7 +710,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F434B8D32D788BD100B5ACE3 /* Build configuration list for PBXNativeTarget "FetchRecipeIntegrationTests" */ = {
+		F434B8D32D788BD100B5ACE3 /* Build configuration list for PBXNativeTarget "FetchRecipeCacheIntegrationTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F434B8D42D788BD100B5ACE3 /* Debug */,

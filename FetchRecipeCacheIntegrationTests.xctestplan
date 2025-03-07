@@ -17,7 +17,7 @@
       "target" : {
         "containerPath" : "container:FetchRecipe.xcodeproj",
         "identifier" : "F434B8CC2D788BD100B5ACE3",
-        "name" : "FetchRecipeIntegrationTests"
+        "name" : "FetchRecipeCacheIntegrationTests"
       }
     }
   ],

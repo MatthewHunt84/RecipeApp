@@ -1,6 +1,6 @@
 //
-//  FetchRecipeIntegrationTests.swift
-//  FetchRecipeIntegrationTests
+//  FetchRecipeCacheIntegrationTests.swift
+//  FetchRecipeCacheIntegrationTests
 //
 //  Created by Matt Hunt on 3/5/25.
 //
@@ -11,7 +11,7 @@ import Foundation
 import SwiftData
 
 @Suite(.serialized)
-struct FetchRecipeIntegrationTests {
+struct FetchRecipeCacheIntegrationTests {
 
     @Test func retrieve_withEmptyCache_shouldReturnEmptyRecipeArray() async throws {
         let sut = await makeSUT()

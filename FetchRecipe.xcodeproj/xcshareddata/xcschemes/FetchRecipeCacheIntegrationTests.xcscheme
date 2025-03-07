@@ -14,7 +14,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:FetchRecipeIntegrationTests.xctestplan"
+            reference = "container:FetchRecipeCacheIntegrationTests.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
@@ -25,8 +25,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F434B8CC2D788BD100B5ACE3"
-               BuildableName = "FetchRecipeIntegrationTests.xctest"
-               BlueprintName = "FetchRecipeIntegrationTests"
+               BuildableName = "FetchRecipeCacheIntegrationTests.xctest"
+               BlueprintName = "FetchRecipeCacheIntegrationTests"
                ReferencedContainer = "container:FetchRecipe.xcodeproj">
             </BuildableReference>
          </TestableReference>
