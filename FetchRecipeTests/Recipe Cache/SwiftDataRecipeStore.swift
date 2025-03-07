@@ -87,21 +87,6 @@ struct SwiftDataRecipeStore {
         let sut = SwiftDataStore(modelContainer: container)
         return sut
     }
-    
-    func makeLocalRecipe() -> LocalRecipe {
-        LocalRecipe(
-            cuisine: "Any",
-            name: "Any",
-            photoUrlLarge: nil,
-            photoUrlSmall: nil,
-            uuid: UUID().uuidString,
-            sourceUrl: nil,
-            youtubeUrl: nil)
-    }
-    
-    func makeLocalRecipes() -> [LocalRecipe] {
-        (0..<Int.random(in: 1...10)).map { _ in makeLocalRecipe() }
-    }
 
     func makeLocalRecipesWithDuplicates() -> [LocalRecipe] {
         let originalRecipe = makeLocalRecipe()

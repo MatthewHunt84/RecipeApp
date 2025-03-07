@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F42E5FDA2D7B30E800CD9F81 /* SharedTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42E5FD92D7B30E800CD9F81 /* SharedTestHelpers.swift */; };
+		F42E5FDB2D7B30E800CD9F81 /* SharedTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42E5FD92D7B30E800CD9F81 /* SharedTestHelpers.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		F434B8D12D788BD100B5ACE3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -32,6 +37,7 @@
 
 /* Begin PBXFileReference section */
 		F41F0F112D5715860098ECED /* FetchRecipe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FetchRecipe.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F42E5FD92D7B30E800CD9F81 /* SharedTestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTestHelpers.swift; sourceTree = "<group>"; };
 		F434B8CD2D788BD100B5ACE3 /* FetchRecipeIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FetchRecipeIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4BB7C532D6F4F540063FF7E /* FetchRecipeTestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FetchRecipeTestPlan.xctestplan; sourceTree = "<group>"; };
 		F4CD33E62D79F3F300E82485 /* FetchRecipeAPIEndToEndTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FetchRecipeAPIEndToEndTests.xctestplan; sourceTree = "<group>"; };
@@ -125,9 +131,18 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		F42E5FD82D7B30BB00CD9F81 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				F42E5FD92D7B30E800CD9F81 /* SharedTestHelpers.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		F434B8C82D788A8100B5ACE3 /* FetchRecipeTests */ = {
 			isa = PBXGroup;
 			children = (
+				F42E5FD82D7B30BB00CD9F81 /* Helpers */,
 				F4BB7C632D6F4FE10063FF7E /* Recipe API */,
 				F4BB7C5C2D6F4FDD0063FF7E /* Recipe Cache */,
 			);
@@ -321,6 +336,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F42E5FDB2D7B30E800CD9F81 /* SharedTestHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -328,6 +344,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F42E5FDA2D7B30E800CD9F81 /* SharedTestHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
