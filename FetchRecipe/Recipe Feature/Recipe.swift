@@ -26,3 +26,9 @@ public struct Recipe: Codable, Equatable {
         self.youtubeUrl = youtubeUrl
     }
 }
+
+extension Recipe: Comparable {
+    public static func < (lhs: Recipe, rhs: Recipe) -> Bool {
+        lhs.uuid < rhs.uuid
+    }
+}
