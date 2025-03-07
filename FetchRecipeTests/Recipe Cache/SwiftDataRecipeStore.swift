@@ -101,4 +101,19 @@ struct SwiftDataRecipeStore {
         
         return [originalRecipe, duplicateRecipe]
     }
+    
+    func makeLocalRecipe() -> LocalRecipe {
+        LocalRecipe(
+            cuisine: "Any",
+            name: "Any",
+            photoUrlLarge: nil,
+            photoUrlSmall: nil,
+            uuid: UUID().uuidString,
+            sourceUrl: nil,
+            youtubeUrl: nil)
+    }
+
+    func makeLocalRecipes() -> [LocalRecipe] {
+        (0..<Int.random(in: 1...10)).map { _ in makeLocalRecipe() }
+    }
 }
