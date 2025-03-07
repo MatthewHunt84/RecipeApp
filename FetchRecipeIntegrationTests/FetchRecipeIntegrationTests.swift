@@ -32,6 +32,21 @@ struct FetchRecipeIntegrationTests {
         #expect(retrievedRecipes.sorted() == insertedRecipes.sorted())
     }
     
+    @Test func insertion_withNonEmptyCache_shouldOverrideCachedRecipes() async throws {
+        let sutToPerformFirstSave = await makeSUT()
+        let sutToPerformLatestSave = await makeSUT()
+        let sutToPerformLoad = await makeSUT()
+        
+        let firstInsertedRecipes = makeLocalRecipes()
+        try await sutToPerformFirstSave.insertRecipes(firstInsertedRecipes)
+        
+        let latestInsertedRecipes = makeLocalRecipes()
+        try await sutToPerformLatestSave.insertRecipes(latestInsertedRecipes)
+        
+        let retrievedRecipes = try await sutToPerformLoad.retrieveRecipes()
+        
+        #expect(retrievedRecipes.sorted() == latestInsertedRecipes.sorted())
+    }
     func makeSUT() async -> SwiftDataStore {
         let container = try! ModelContainer(for: SwiftDataLocalRecipe.self, configurations: ModelConfiguration(isStoredInMemoryOnly: false))
         let sut = SwiftDataStore(modelContainer: container)
