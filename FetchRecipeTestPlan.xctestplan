@@ -23,15 +23,6 @@
         "identifier" : "F4CEE88E2D590A1900A69385",
         "name" : "FetchRecipeTests"
       }
-    },
-    {
-      "enabled" : false,
-      "parallelizable" : true,
-      "target" : {
-        "containerPath" : "container:FetchRecipe.xcodeproj",
-        "identifier" : "F4F715982D698D4200ADA2A1",
-        "name" : "FetchRecipeAPIEndToEndTests"
-      }
     }
   ],
   "version" : 1
