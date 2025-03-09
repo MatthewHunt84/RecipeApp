@@ -66,8 +66,8 @@ class URLSessionHTTPClientTests {
         return URLSessionHTTPClient()
     }
     
-    func anyURL() -> URL {
-        return try! #require(URL(string: "http://any-url.com"))
+    func anyURL() throws -> URL {
+        return try #require(URL(string: "http://any-url.com"))
     }
     
     func anyData() -> Data {

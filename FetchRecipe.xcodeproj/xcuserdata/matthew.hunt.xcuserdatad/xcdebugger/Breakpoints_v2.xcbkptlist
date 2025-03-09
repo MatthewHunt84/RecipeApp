@@ -80,5 +80,35 @@
             landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1F0BB95C-1F00-474D-A1B6-5CA6AAC7698D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../../var/folders/yv/df66r0rj00z_gsq92gzpqkvsvdnrrv/T/swift-generated-sources/@__swiftmacro_16FetchRecipeTests0034RemoteRecipeLoaderTestsswift_oeBCkfMX88_34_7requirefMf_.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2"
+            endingLineNumber = "2"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5525B499-ACF6-4758-8E8D-D1CA4F33DD9F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../../var/folders/yv/df66r0rj00z_gsq92gzpqkvsvdnrrv/T/swift-generated-sources/@__swiftmacro_16FetchRecipeTests0034RemoteRecipeLoaderTestsswift_oeBCkfMX136_27_33_C3B146B0910E90C5ACBD5D38D7612502Ll7requirefMf_.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1"
+            endingLineNumber = "1">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

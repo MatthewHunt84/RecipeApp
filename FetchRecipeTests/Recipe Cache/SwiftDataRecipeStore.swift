@@ -15,7 +15,7 @@ import SwiftData
 struct SwiftDataRecipeStore {
 
     @Test func retrieveRecipes_withEmptyCache_shouldReturnEmptyArray() async throws {
-        let sut = makeSUT()
+        let sut = try makeSUT()
         
         let emptyRecipes = try await sut.retrieveRecipes()
         
@@ -23,8 +23,8 @@ struct SwiftDataRecipeStore {
     }
     
     @Test func retrieveRecipes_multipleTimesWithEmptyCache_shouldReturnEmptyArrays() async throws {
-        let sut = makeSUT()
-        
+        let sut = try makeSUT()
+
         let emptyRecipes = try await sut.retrieveRecipes()
         let emptyRecipes2 = try await sut.retrieveRecipes()
         let emptyRecipes3 = try await sut.retrieveRecipes()
@@ -35,8 +35,8 @@ struct SwiftDataRecipeStore {
     }
     
     @Test func retrieveRecipes_withCachedRecipes_shouldReturnCachedRecipes() async throws {
-        let sut = makeSUT()
-        
+        let sut = try makeSUT()
+
         let insertedRecipes = makeLocalRecipes()
         
         try await sut.insertRecipes(insertedRecipes)
@@ -46,7 +46,7 @@ struct SwiftDataRecipeStore {
     }
     
     @Test func retrieveRecipes_multipleTimesWithCachedRecipes_shouldReturnCachedRecipes() async throws {
-        let sut = makeSUT()
+        let sut = try makeSUT()
         
         let insertedRecipes = makeLocalRecipes()
         
@@ -58,7 +58,7 @@ struct SwiftDataRecipeStore {
     }
     
     @Test func insertRecipes_overridesPreviouslyInsertedRecipes() async throws {
-        let sut = makeSUT()
+        let sut = try makeSUT()
         let firstRecipes = makeLocalRecipes()
         let secondRecipes = makeLocalRecipes()
         
@@ -70,7 +70,7 @@ struct SwiftDataRecipeStore {
     }
     
     @Test func insertRecipes_withDuplicateRecipes_shouldNotInsertDuplicates() async throws {
-        let sut = makeSUT()
+        let sut = try makeSUT()
         let recipesWithDuplicate = makeLocalRecipesWithDuplicates()
         try #require(recipesWithDuplicate.count == 2)
         
@@ -82,8 +82,8 @@ struct SwiftDataRecipeStore {
     
     // MARK: Helpers
     
-    func makeSUT() -> SwiftDataStore {
-        let container = try! ModelContainer(for: SwiftDataLocalRecipe.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+    func makeSUT() throws -> SwiftDataStore {
+        let container = try ModelContainer(for: SwiftDataLocalRecipe.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
         let sut = SwiftDataStore(modelContainer: container)
         return sut
     }

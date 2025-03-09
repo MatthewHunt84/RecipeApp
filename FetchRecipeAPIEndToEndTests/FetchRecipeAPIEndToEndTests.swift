@@ -13,7 +13,7 @@ import Foundation
 struct FetchRecipeAPIEndToEndTests {
 
     @Test func testEndToEndServerGETRecipeDataReturnsData() async throws {
-        let validURL = makeValidURL()
+        let validURL = try makeValidURL()
         
         let recipes = try await loadFromURL(validURL)
         
@@ -22,7 +22,7 @@ struct FetchRecipeAPIEndToEndTests {
     }
     
     @Test func testEndToEndServerGETRecipeDataMatchesExpectedRecipes() async throws {
-        let validURL = makeValidURL()
+        let validURL = try makeValidURL()
         
         let recipes = try await loadFromURL(validURL)
         
@@ -40,7 +40,7 @@ struct FetchRecipeAPIEndToEndTests {
     }
     
     @Test func testMalformedDataReturnsError() async throws {
-        let malformedDataURL = makeMalformedDataURL()
+        let malformedDataURL = try makeMalformedDataURL()
         
         await #expect(throws: RemoteRecipeLoader.Error.decodingError) {
             let _ = try await loadFromURL(malformedDataURL)
@@ -48,7 +48,7 @@ struct FetchRecipeAPIEndToEndTests {
     }
     
     @Test func testEmptyDataReturnsWithoutError() async throws {
-        let emptyDataURL = makeEmptyDataURL()
+        let emptyDataURL = try makeEmptyDataURL()
         
         let recipes = try await loadFromURL(emptyDataURL)
         
@@ -64,16 +64,16 @@ struct FetchRecipeAPIEndToEndTests {
         return try await loader.load()
     }
     
-    func makeValidURL() -> URL {
-        try! #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"))
+    func makeValidURL() throws -> URL {
+        try #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"))
     }
     
-    func makeMalformedDataURL() -> URL {
-        try! #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes-malformed.json"))
+    func makeMalformedDataURL() throws -> URL {
+        try #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes-malformed.json"))
     }
     
-    func makeEmptyDataURL() -> URL {
-        try! #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes-empty.json"))
+    func makeEmptyDataURL() throws -> URL {
+        try #require(URL(string:"https://d3jbb8n5wk0qxi.cloudfront.net/recipes-empty.json"))
     }
     
     func expectedRecipe(at index: Int) -> Recipe {

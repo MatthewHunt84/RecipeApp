@@ -14,7 +14,7 @@ import SwiftData
 struct FetchRecipeCacheIntegrationTests {
 
     @Test func retrieve_withEmptyCache_shouldReturnEmptyRecipeArray() async throws {
-        let sut = await makeSUT()
+        let sut = try await makeSUT()
         
         let recipes = try await sut.load()
 
@@ -22,8 +22,8 @@ struct FetchRecipeCacheIntegrationTests {
     }
 
     @Test func insertion_withEmptyCache_shouldAddRecipesToCache() async throws {
-        let sutToPerformSave = await makeSUT()
-        let sutToPerformLoad = await makeSUT()
+        let sutToPerformSave = try await makeSUT()
+        let sutToPerformLoad = try await makeSUT()
         let insertedRecipes = makeRecipes()
         
         try await sutToPerformSave.save(insertedRecipes)
@@ -33,9 +33,9 @@ struct FetchRecipeCacheIntegrationTests {
     }
     
     @Test func insertion_withNonEmptyCache_shouldOverrideCachedRecipes() async throws {
-        let sutToPerformFirstSave = await makeSUT()
-        let sutToPerformLatestSave = await makeSUT()
-        let sutToPerformLoad = await makeSUT()
+        let sutToPerformFirstSave = try await makeSUT()
+        let sutToPerformLatestSave = try await makeSUT()
+        let sutToPerformLoad = try await makeSUT()
         
         let firstInsertedRecipes = makeRecipes()
         try await sutToPerformFirstSave.save(firstInsertedRecipes)
@@ -47,10 +47,10 @@ struct FetchRecipeCacheIntegrationTests {
         #expect(retrievedRecipes.sorted() == latestInsertedRecipes.sorted())
     }
     
-    func makeSUT() async -> LocalRecipeLoader {
-        let container = try! ModelContainer(for: SwiftDataLocalRecipe.self, configurations: ModelConfiguration(isStoredInMemoryOnly: false))
+    func makeSUT() async throws -> LocalRecipeLoader {
+        let container = try ModelContainer(for: SwiftDataLocalRecipe.self, configurations: ModelConfiguration(isStoredInMemoryOnly: false))
         let swiftDataStore = SwiftDataStore(modelContainer: container)
-        try! await #require(try swiftDataStore.deleteCachedRecipes())
+        try await #require(try swiftDataStore.deleteCachedRecipes())
         let sut = LocalRecipeLoader(store: swiftDataStore)
         
         return sut

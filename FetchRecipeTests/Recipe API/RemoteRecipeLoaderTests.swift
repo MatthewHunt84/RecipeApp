@@ -9,20 +9,18 @@ import Testing
 import Foundation
 import FetchRecipe
 
-
-
 struct FetchRecipeTests {
     
     @Test func initDoesNotRequestData() throws {
-        let (_, client) = makeSUT()
+        let (_, client) = try makeSUT()
         
         #expect(client.stubs.isEmpty)
     }
     
     @Test func loadRequestsDataFromURL() async throws {
         let url = try #require(URL(string:"https://test-specific-url.com"))
-        let (sut, client) = makeSUT(url: url)
-        let result = makeResult()
+        let (sut, client) = try makeSUT(url: url)
+        let result = try makeResult()
         client.stub(url: url, with: result)
         
         let _ = try await sut.load()
@@ -33,8 +31,8 @@ struct FetchRecipeTests {
     
     @Test func loadTwiceRequestsDataFromURLTwice() async throws {
         let url = try #require(URL(string:"https://test-url.com"))
-        let (sut, client) = makeSUT(url: url)
-        let result = makeResult()
+        let (sut, client) = try makeSUT(url: url)
+        let result = try makeResult()
         client.stub(url: url, with: result)
         client.stub(url: url, with: result)
         
@@ -47,9 +45,9 @@ struct FetchRecipeTests {
     }
     
     @Test func loadDeliversConnectivityErrorOnClientError() async throws {
-        let (sut, client) = makeSUT()
-        let url = makeStubbedURL()
-        let result = makeResult(error: NSError(domain: "Test", code: 0))
+        let (sut, client) = try makeSUT()
+        let url = try makeStubbedURL()
+        let result = try makeResult(error: NSError(domain: "Test", code: 0))
         client.stub(url: url, with: result)
         
         await #expect(throws: RemoteRecipeLoader.Error.connectivity) {
@@ -59,9 +57,9 @@ struct FetchRecipeTests {
     
     @Test(arguments: [199, 201, 300, 400, 500])
     func loadDeliversErrorOnNon200HTTPResponse(statusCode: Int) async throws {
-        let (sut, client) = makeSUT()
-        let url = makeStubbedURL()
-        let result = makeResult(responseStatusCode: statusCode)
+        let (sut, client) = try makeSUT()
+        let url = try makeStubbedURL()
+        let result = try makeResult(responseStatusCode: statusCode)
         client.stub(url: url, with: result)
         
         await #expect(throws: RemoteRecipeLoader.Error.invalidStatusCode) {
@@ -70,9 +68,9 @@ struct FetchRecipeTests {
     }
     
     @Test func clientCanCompleteWithEmptyData() async throws {
-        let (sut, client) = makeSUT()
-        let url = makeStubbedURL()
-        let result = makeResult(data: stubEmptyData())
+        let (sut, client) = try makeSUT()
+        let url = try makeStubbedURL()
+        let result = try makeResult(data: stubEmptyData())
         client.stub(url: url, with: result)
         
         let recipes = try await sut.load()
@@ -81,14 +79,14 @@ struct FetchRecipeTests {
     }
     
     @Test func loadDeliversRecipesFromValidData() async throws {
-        let (sut, client) = makeSUT()
-        let url = makeStubbedURL()
+        let (sut, client) = try makeSUT()
+        let url = try makeStubbedURL()
         
         let bakeWellTart = makeRecipe(name: "Bakewell Tart")
         let figgyPudding = makeRecipe(name: "Figgy Pudding")
-        let recipesJSONData = makeRecipeJSON(from: [bakeWellTart.json, figgyPudding.json])
+        let recipesJSONData = try makeRecipeJSON(from: [bakeWellTart.json, figgyPudding.json])
 
-        let result = makeResult(data: recipesJSONData)
+        let result = try makeResult(data: recipesJSONData)
         client.stub(url: url, with: result)
         
         let loadedRecipes = try await sut.load()
@@ -97,64 +95,70 @@ struct FetchRecipeTests {
     }
     
     @Test func invalidDataThrowsDecodingError() async throws {
-        let (sut, client) = makeSUT()
-        let url = makeStubbedURL()
+        let (sut, client) = try makeSUT()
+        let url = try makeStubbedURL()
 
-        let result = makeResult(data: Data("invalid-data".utf8))
+        let result = try makeResult(data: Data("invalid-data".utf8))
         client.stub(url: url, with: result)
         
         await #expect(throws: RemoteRecipeLoader.Error.decodingError) {
-            let loadedRecipes = try await sut.load()
+            let _ = try await sut.load()
         }
     }
     
     // MARK: - Helpers
     
-    private func makeSUT(url: URL? = nil) -> (sut: RemoteRecipeLoader, client: HTTPClientSpy) {
+    private func makeSUT(url: URL? = nil) throws -> (sut: RemoteRecipeLoader, client: HTTPClientSpy) {
         let client = HTTPClientSpy()
-        let sut = RemoteRecipeLoader(client: client, url: url ?? makeStubbedURL())
+        guard let url else {
+            let stubbedURL = try makeStubbedURL()
+            let sut = RemoteRecipeLoader(client: client, url: stubbedURL)
+            return (sut, client)
+        }
+        let sut = RemoteRecipeLoader(client: client, url: url)
         return (sut, client)
     }
     
-    private func makeStubbedURL() -> URL {
-        return try! #require(URL(string: "https://default-test-url.com"))
+    private func makeStubbedURL() throws -> URL {
+        return try #require(URL(string: "https://default-test-url.com"))
     }
     
-    private func stubResponse(code: Int) -> HTTPURLResponse {
-        let url = try! #require(URL(string: "https://test-url.com"))
-        return try! #require(
-            HTTPURLResponse(
-                url: url,
-                statusCode: code,
-                httpVersion: nil,
-                headerFields: nil))
+    private func stubResponse(code: Int) throws -> HTTPURLResponse {
+        let url = try #require(URL(string: "https://test-url.com"))
+        return try #require(HTTPURLResponse(url: url, statusCode: code, httpVersion: nil, headerFields: nil))
     }
     
-    private func makeResult(error: Error? = nil, responseStatusCode: Int = 200, data: Data? = nil) -> Result<(Data, URLResponse), Error> {
+    private func makeResult(error: Error? = nil, responseStatusCode: Int = 200, data: Data? = nil) throws -> Result<(Data, URLResponse), Error> {
         if let error {
             return .failure(error)
         }
-        let response = stubResponse(code: responseStatusCode)
-        let validData = data ?? stubEmptyData()
+        let response = try #require(try stubResponse(code: responseStatusCode))
         
-        return .success((validData, response))
+        if let data {
+            return .success((data, response))
+        } else {
+            let validData = try stubEmptyData()
+            return .success((validData, response))
+        }
     }
     
-    private func stubEmptyData() -> Data {
-        return """
+    private func stubEmptyData() throws -> Data {
+        try #require("""
         {
             "recipes": []
         }
-        """.data(using: .utf8)!
+        """.data(using: .utf8))
     }
     
-    private func makeRecipe(cuisine: String = "Cuisine",
-                            name: String = "Name",
-                            photoUrlLarge: String? = "https://some.url/large.jpg",
-                            photoUrlSmall: String? = "https://some.url/small.jpg",
-                            uuid: String = "eed6005f-f8c8-451f-98d0-4088e2b40eb6",
-                            sourceUrl: String? = "https://some.url/index.html",
-                            youtubeUrl: String? = "https://www.youtube.com/watch?v=some.id") -> (recipe: Recipe, json: [String: Any]) {
+    private func makeRecipe(
+        cuisine: String = "Cuisine",
+        name: String = "Name",
+        photoUrlLarge: String? = "https://some.url/large.jpg",
+        photoUrlSmall: String? = "https://some.url/small.jpg",
+        uuid: String = "eed6005f-f8c8-451f-98d0-4088e2b40eb6",
+        sourceUrl: String? = "https://some.url/index.html",
+        youtubeUrl: String? = "https://www.youtube.com/watch?v=some.id") -> (recipe: Recipe, json: [String: Any]) {
+       
         let json: [String: Any] = [
             "cuisine": cuisine,
             "name": name,
@@ -176,11 +180,11 @@ struct FetchRecipeTests {
         return (recipe: recipe, json: json)
     }
     
-    private func makeRecipeJSON(from json: [[String: Any]]) -> Data {
+    private func makeRecipeJSON(from json: [[String: Any]]) throws -> Data {
         let recipesJSON = [
             "recipes" : json
         ]
-        return try! #require(try JSONSerialization.data(withJSONObject: recipesJSON))
+        return try JSONSerialization.data(withJSONObject: recipesJSON)
     }
     
     private final class HTTPClientSpy: HTTPClient {
@@ -193,7 +197,7 @@ struct FetchRecipeTests {
         }
         
         func data(from url: URL) async throws -> (Data, URLResponse) {
-            let matchedStubIndex = try! #require(stubs.firstIndex(where: { $0.url == url }))
+            let matchedStubIndex = try #require(stubs.firstIndex(where: { $0.url == url }))
             let matchedStub = stubs.remove(at: matchedStubIndex)
             completedRequests.append(matchedStub)
             
