@@ -35,8 +35,6 @@
 		F434B8CD2D788BD100B5ACE3 /* FetchRecipeCacheIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FetchRecipeCacheIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F48B491B2D7F1B97008D1015 /* CITestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = CITestPlan.xctestplan; sourceTree = "<group>"; };
 		F4BB7C532D6F4F540063FF7E /* FetchRecipeTestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FetchRecipeTestPlan.xctestplan; sourceTree = "<group>"; };
-		F4CD33E62D79F3F300E82485 /* FetchRecipeAPIEndToEndTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FetchRecipeAPIEndToEndTests.xctestplan; sourceTree = "<group>"; };
-		F4CD33EB2D79F4E600E82485 /* FetchRecipeCacheIntegrationTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FetchRecipeCacheIntegrationTests.xctestplan; sourceTree = "<group>"; };
 		F4CEE88F2D590A1900A69385 /* FetchRecipeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FetchRecipeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4F715992D698D4200ADA2A1 /* FetchRecipeAPIEndToEndTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FetchRecipeAPIEndToEndTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -105,9 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				F48B491B2D7F1B97008D1015 /* CITestPlan.xctestplan */,
-				F4CD33EB2D79F4E600E82485 /* FetchRecipeCacheIntegrationTests.xctestplan */,
 				F4BB7C532D6F4F540063FF7E /* FetchRecipeTestPlan.xctestplan */,
-				F4CD33E62D79F3F300E82485 /* FetchRecipeAPIEndToEndTests.xctestplan */,
 				F41F0F132D5715860098ECED /* FetchRecipe */,
 				F434B8C82D788A8100B5ACE3 /* FetchRecipeTests */,
 				F4F7159A2D698D4200ADA2A1 /* FetchRecipeAPIEndToEndTests */,
