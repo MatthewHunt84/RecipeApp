@@ -33,6 +33,7 @@
 /* Begin PBXFileReference section */
 		F41F0F112D5715860098ECED /* FetchRecipe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FetchRecipe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F434B8CD2D788BD100B5ACE3 /* FetchRecipeCacheIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FetchRecipeCacheIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F48B491B2D7F1B97008D1015 /* CITestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = CITestPlan.xctestplan; sourceTree = "<group>"; };
 		F4BB7C532D6F4F540063FF7E /* FetchRecipeTestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FetchRecipeTestPlan.xctestplan; sourceTree = "<group>"; };
 		F4CD33E62D79F3F300E82485 /* FetchRecipeAPIEndToEndTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FetchRecipeAPIEndToEndTests.xctestplan; sourceTree = "<group>"; };
 		F4CD33EB2D79F4E600E82485 /* FetchRecipeCacheIntegrationTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FetchRecipeCacheIntegrationTests.xctestplan; sourceTree = "<group>"; };
@@ -103,6 +104,7 @@
 		F41F0F082D5715860098ECED = {
 			isa = PBXGroup;
 			children = (
+				F48B491B2D7F1B97008D1015 /* CITestPlan.xctestplan */,
 				F4CD33EB2D79F4E600E82485 /* FetchRecipeCacheIntegrationTests.xctestplan */,
 				F4BB7C532D6F4F540063FF7E /* FetchRecipeTestPlan.xctestplan */,
 				F4CD33E62D79F3F300E82485 /* FetchRecipeAPIEndToEndTests.xctestplan */,

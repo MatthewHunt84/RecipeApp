@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "BBC76617-6D1E-4A17-9595-D0F455D093C3",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:FetchRecipe.xcodeproj",
+        "identifier" : "F4F715982D698D4200ADA2A1",
+        "name" : "FetchRecipeAPIEndToEndTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:FetchRecipe.xcodeproj",
+        "identifier" : "F434B8CC2D788BD100B5ACE3",
+        "name" : "FetchRecipeCacheIntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:FetchRecipe.xcodeproj",
+        "identifier" : "F4CEE88E2D590A1900A69385",
+        "name" : "FetchRecipeTests"
+      }
+    }
+  ],
+  "version" : 1
+}
