@@ -11,8 +11,8 @@ import Foundation
 
 @Suite(.timeLimit(.minutes(1)))
 struct FetchRecipeAPIEndToEndTests {
-
-    @Test func testEndToEndServerGETRecipeDataReturnsData() async throws {
+    
+    @Test func loadFromUrl_withValidEndpoint_shouldLoadData() async throws {
         let validURL = try makeValidURL()
         
         let recipes = try await loadFromURL(validURL)
@@ -21,7 +21,7 @@ struct FetchRecipeAPIEndToEndTests {
         #expect(recipes.count == 63)
     }
     
-    @Test func testEndToEndServerGETRecipeDataMatchesExpectedRecipes() async throws {
+    @Test func loadFromUrl_withValidEndpoint_shouldLoadExpectedRecipes() async throws {
         let validURL = try makeValidURL()
         
         let recipes = try await loadFromURL(validURL)
@@ -39,7 +39,7 @@ struct FetchRecipeAPIEndToEndTests {
         #expect(recipes[10] == expectedRecipe(at: 10))
     }
     
-    @Test func testMalformedDataReturnsError() async throws {
+    @Test func loadFromUrl_withMalformedData_shouldThrowError() async throws {
         let malformedDataURL = try makeMalformedDataURL()
         
         await #expect(throws: RemoteRecipeLoader.Error.decodingError) {
@@ -47,7 +47,7 @@ struct FetchRecipeAPIEndToEndTests {
         }
     }
     
-    @Test func testEmptyDataReturnsWithoutError() async throws {
+    @Test func loadFromUrl_withEmptyData_shouldReturnEmptyArrayWithNoError() async throws {
         let emptyDataURL = try makeEmptyDataURL()
         
         let recipes = try await loadFromURL(emptyDataURL)

@@ -12,7 +12,7 @@ import SwiftData
 
 
 @Suite(.serialized)
-struct SwiftDataRecipeStore {
+struct SwiftDataRecipeStoreTests {
 
     @Test func retrieveRecipes_withEmptyCache_shouldReturnEmptyArray() async throws {
         let sut = try makeSUT()
@@ -89,7 +89,7 @@ struct SwiftDataRecipeStore {
     }
 
     func makeLocalRecipesWithDuplicates() -> [LocalRecipe] {
-        let originalRecipe = makeLocalRecipe()
+        let originalRecipe = makeUniqueLocalRecipe()
         let duplicateRecipe = LocalRecipe(
             cuisine: originalRecipe.cuisine,
             name: originalRecipe.cuisine,
@@ -102,18 +102,9 @@ struct SwiftDataRecipeStore {
         return [originalRecipe, duplicateRecipe]
     }
     
-    func makeLocalRecipe() -> LocalRecipe {
-        LocalRecipe(
-            cuisine: "Any",
-            name: "Any",
-            photoUrlLarge: nil,
-            photoUrlSmall: nil,
-            uuid: UUID().uuidString,
-            sourceUrl: nil,
-            youtubeUrl: nil)
-    }
-
     func makeLocalRecipes() -> [LocalRecipe] {
-        (0..<Int.random(in: 1...10)).map { _ in makeLocalRecipe() }
+        (0..<Int.random(in: 1...10)).map { _ in
+            makeUniqueLocalRecipe()
+        }
     }
 }

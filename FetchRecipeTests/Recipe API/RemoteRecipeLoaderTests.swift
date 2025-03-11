@@ -9,15 +9,15 @@ import Testing
 import Foundation
 import FetchRecipe
 
-struct FetchRecipeTests {
+struct RemoteRecipeLoaderTests {
     
-    @Test func initDoesNotRequestData() throws {
+    @Test func init_shouldNotRequestData() throws {
         let (_, client) = try makeSUT()
         
         #expect(client.stubs.isEmpty)
     }
     
-    @Test func loadRequestsDataFromURL() async throws {
+    @Test func load_shouldRequestDataFromUrl() async throws {
         let url = try #require(URL(string:"https://test-specific-url.com"))
         let (sut, client) = try makeSUT(url: url)
         let result = try makeResult()
@@ -29,7 +29,7 @@ struct FetchRecipeTests {
         #expect(client.completedRequests.last?.url == url)
     }
     
-    @Test func loadTwiceRequestsDataFromURLTwice() async throws {
+    @Test func load_twice_shouldRequestsDataFromURLTwice() async throws {
         let url = try #require(URL(string:"https://test-url.com"))
         let (sut, client) = try makeSUT(url: url)
         let result = try makeResult()
@@ -44,7 +44,7 @@ struct FetchRecipeTests {
         #expect(client.completedRequests[1].url == url)
     }
     
-    @Test func loadDeliversConnectivityErrorOnClientError() async throws {
+    @Test func load_withConnectivityError_throwsClientError() async throws {
         let (sut, client) = try makeSUT()
         let url = try makeStubbedURL()
         let result = try makeResult(error: NSError(domain: "Test", code: 0))
@@ -56,7 +56,7 @@ struct FetchRecipeTests {
     }
     
     @Test(arguments: [199, 201, 300, 400, 500])
-    func loadDeliversErrorOnNon200HTTPResponse(statusCode: Int) async throws {
+    func load_withNon200HTTPResponse_shouldThrowError(statusCode: Int) async throws {
         let (sut, client) = try makeSUT()
         let url = try makeStubbedURL()
         let result = try makeResult(responseStatusCode: statusCode)
@@ -67,7 +67,7 @@ struct FetchRecipeTests {
         }
     }
     
-    @Test func clientCanCompleteWithEmptyData() async throws {
+    @Test func load_withEmptyData_shouldReturnEmptyRecipeArray() async throws {
         let (sut, client) = try makeSUT()
         let url = try makeStubbedURL()
         let result = try makeResult(data: stubEmptyData())
@@ -78,7 +78,7 @@ struct FetchRecipeTests {
         #expect(recipes == [])
     }
     
-    @Test func loadDeliversRecipesFromValidData() async throws {
+    @Test func load_withValidData_shouldReturnRecipeArray() async throws {
         let (sut, client) = try makeSUT()
         let url = try makeStubbedURL()
         
@@ -94,7 +94,7 @@ struct FetchRecipeTests {
         #expect(loadedRecipes == [bakeWellTart.recipe, figgyPudding.recipe])
     }
     
-    @Test func invalidDataThrowsDecodingError() async throws {
+    @Test func load_withInvalidData_shouldThrowDecodingError() async throws {
         let (sut, client) = try makeSUT()
         let url = try makeStubbedURL()
 

@@ -11,14 +11,14 @@ import Foundation
 
 struct LoadFromCacheTests {
 
-    @Test func testCacheInitDoesNotLoadOrDeleteRecipes() {
+    @Test func init_withNewCache_shouldNotLoadOrDeleteRecipes() {
         let (_, store) = makeSUT()
         
         #expect(store.savedRecipes == [])
         #expect(store.deletedRecipes == [])
     }
     
-    @Test func testLoadFailsOnRetrievalError() async throws {
+    @Test func load_withRetrievalError_shouldThrowError() async throws {
         let (sut, store) = makeSUT()
         let retrievalError = NSError(domain: "Cache Retrieval Error", code: 0)
         store.stubRetrievalResult(.failure(retrievalError))
@@ -28,17 +28,16 @@ struct LoadFromCacheTests {
         }
     }
     
-    @Test func testLoadDeliversNoRecipesFromEmptyCache() async throws {
+    @Test func load_withEmptyCache_shouldReturnEmptyRecipeArray() async throws {
         let (sut, store) = makeSUT()
         try #require(store.savedRecipes.isEmpty)
         
         let recipes = try await sut.load()
         
         #expect(recipes.isEmpty)
-        
     }
     
-    @Test func testLoadWithoutErrorSuccessfullyDeliversCachedRecipes() async throws {
+    @Test func load_withCachedRecipes_shouldReturnCachedRecipes() async throws {
         let (sut, store) = makeSUT()
         let savedRecipes = makeUniqueRecipes()
         store.stubRetrievalResult(.success(savedRecipes.local))
@@ -46,35 +45,5 @@ struct LoadFromCacheTests {
         let recipes = try await sut.load()
         
         #expect(recipes == savedRecipes.models)
-    }
-    
-    func makeSUT() -> (LocalRecipeLoader, RecipeStoreSpy) {
-        let store = RecipeStoreSpy()
-        let localRecipeLoader = LocalRecipeLoader(store: store)
-        return (localRecipeLoader, store)
-    }
-    
-    func makeUniqueLocalRecipe() -> LocalRecipe {
-        LocalRecipe(cuisine: "any",
-               name: "any",
-               photoUrlLarge: nil,
-               photoUrlSmall: nil,
-               uuid: UUID().uuidString,
-               sourceUrl: nil,
-               youtubeUrl: nil)
-    }
-    
-    func makeUniqueRecipes() -> (models: [Recipe], local: [LocalRecipe]) {
-        let local = [makeUniqueLocalRecipe(), makeUniqueLocalRecipe()]
-        let models = local.map { Recipe(
-            cuisine: $0.cuisine,
-            name: $0.name,
-            photoUrlLarge: $0.photoUrlLarge,
-            photoUrlSmall: $0.photoUrlSmall,
-            uuid: $0.uuid,
-            sourceUrl: $0.sourceUrl,
-            youtubeUrl: $0.youtubeUrl)
-        }
-        return (models, local)
     }
 }

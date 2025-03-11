@@ -15,9 +15,8 @@ class URLSessionHTTPClientTests {
     init() { URLProtocolStub.startInterceptingRequests() }
     deinit { URLProtocolStub.stopInterceptingRequests() }
     
-    @Test func testDataFromURLFailsOnRequestError() async throws {
+    @Test func dataFromUrl_withFailedUrlRequest_shouldThowError() async {
         let expectedError = NSError(domain: "URL Request failed", code: 0)
-        
         do {
             let _ = try await completeWithResult(.failure(expectedError))
         } catch let error as NSError {
@@ -26,7 +25,7 @@ class URLSessionHTTPClientTests {
         }
     }
     
-    @Test func testDataFromURLPerformsRequestWithExpectedURL() async throws {
+    @Test func dataFromUrl_withValidUrl_shouldPerformGETRequest() async throws {
         let url = try #require(URL(string: "http://specific-test-url.com"))
         let data = anyData()
         let response = URLResponse()
@@ -37,7 +36,7 @@ class URLSessionHTTPClientTests {
         #expect(URLProtocolStub.requests.last?.httpMethod == "GET")
     }
     
-    @Test func testDataFromURLSucceedsWithValidHTTPURLResponse() async throws {
+    @Test func dataFromUrl_withSuccessfulCompletion_shouldReturnDataAndHTTPURLResponse() async throws {
         let expectedData = anyData()
         let expectedHTTPURLResponse = HTTPURLResponse()
         
@@ -49,7 +48,7 @@ class URLSessionHTTPClientTests {
         #expect(data == expectedData)
     }
     
-    @Test func testNilDataWithValidURLResponseReturnsSuccessfullyWithData() async throws {
+    @Test func dataFromUrl_withNilData_shouldReturnEmptyData() async throws {
         let sut = makeSUT()
         let nilData: Data? = nil
         let response = URLResponse()
