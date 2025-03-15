@@ -12,16 +12,16 @@ public struct Recipe: Codable, Equatable {
     public let name: String
     public let photoUrlLarge: String?
     public let photoUrlSmall: String?
-    public let uuid: String
+    public let id: String
     public let sourceUrl: String?
     public let youtubeUrl: String?
     
-    public init(cuisine: String, name: String, photoUrlLarge: String?, photoUrlSmall: String?, uuid: String, sourceUrl: String?, youtubeUrl: String?) {
+    public init(cuisine: String, name: String, photoUrlLarge: String?, photoUrlSmall: String?, id: String, sourceUrl: String?, youtubeUrl: String?) {
         self.cuisine = cuisine
         self.name = name
         self.photoUrlLarge = photoUrlLarge
         self.photoUrlSmall = photoUrlSmall
-        self.uuid = uuid
+        self.id = id
         self.sourceUrl = sourceUrl
         self.youtubeUrl = youtubeUrl
     }
@@ -29,6 +29,6 @@ public struct Recipe: Codable, Equatable {
 
 extension Recipe: Comparable {
     public static func < (lhs: Recipe, rhs: Recipe) -> Bool {
-        lhs.uuid < rhs.uuid
+        lhs.id < rhs.id
     }
 }

@@ -81,7 +81,7 @@ struct FetchRecipeAPIEndToEndTests {
                name: name(at: index),
                photoUrlLarge: photoURLLarge(at: index),
                photoUrlSmall: photoURLSmall(at: index),
-               uuid: uuid(at: index),
+               id: uuid(at: index),
                sourceUrl: sourceURL(at: index),
                youtubeUrl: youtubeURL(at: index))
     }

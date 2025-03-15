@@ -20,7 +20,7 @@ func makeUniqueRecipes() -> (models: [Recipe], local: [LocalRecipe]) {
         name: $0.name,
         photoUrlLarge: $0.photoUrlLarge,
         photoUrlSmall: $0.photoUrlSmall,
-        uuid: $0.uuid,
+        uuid: $0.id,
         sourceUrl: $0.sourceUrl,
         youtubeUrl: $0.youtubeUrl)
     }
@@ -32,7 +32,7 @@ func makeUniqueRecipe() -> Recipe {
            name: "any",
            photoUrlLarge: nil,
            photoUrlSmall: nil,
-           uuid: UUID().uuidString,
+           id: UUID().uuidString,
            sourceUrl: nil,
            youtubeUrl: nil)
 }

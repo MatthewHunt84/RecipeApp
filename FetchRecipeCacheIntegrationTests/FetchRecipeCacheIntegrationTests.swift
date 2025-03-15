@@ -62,7 +62,7 @@ struct FetchRecipeCacheIntegrationTests {
             name: "Any",
             photoUrlLarge: nil,
             photoUrlSmall: nil,
-            uuid: UUID().uuidString,
+            id: UUID().uuidString,
             sourceUrl: nil,
             youtubeUrl: nil)
     }

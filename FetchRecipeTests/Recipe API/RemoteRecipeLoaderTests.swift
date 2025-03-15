@@ -173,7 +173,7 @@ struct RemoteRecipeLoaderTests {
                             name: name,
                             photoUrlLarge: photoUrlLarge,
                             photoUrlSmall: photoUrlSmall,
-                            uuid: uuid,
+                            id: uuid,
                             sourceUrl: sourceUrl,
                             youtubeUrl: youtubeUrl)
         
