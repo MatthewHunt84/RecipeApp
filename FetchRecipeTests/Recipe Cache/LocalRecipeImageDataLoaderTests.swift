@@ -112,9 +112,6 @@ struct LocalRecipeImageDataLoaderTests {
         return (sut, store)
     }
     
-    func anyURL() throws -> URL {
-        return try #require(URL(string: "http://any-url.com"))
-    }
     
     private func mockImageData() throws -> Data {
         try #require("IMAGE".data(using: .utf8))
