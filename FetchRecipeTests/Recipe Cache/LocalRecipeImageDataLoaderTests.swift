@@ -54,7 +54,7 @@ struct LocalRecipeImageDataLoaderTests {
     @Test func loadImageData_withCachedImageData_shouldReturnImageData() async throws {
         let (sut, store) = makeSUT()
         let url = try anyURL()
-        let data = try mockImageData()
+        let data = try mockUniqueImageData()
         
         store.stubRetrievalResult(url: url, with: .success(data))
         
@@ -65,7 +65,7 @@ struct LocalRecipeImageDataLoaderTests {
     @Test func save_withSaveError_shouldThrowError() async throws {
         let (sut, store) = makeSUT()
         let url = try anyURL()
-        let data = try mockImageData()
+        let data = try mockUniqueImageData()
         
         let error = NSError(domain: "saveError", code: 0)
         store.stubInsertionResult(url: url, with: .failure(error))
@@ -78,7 +78,7 @@ struct LocalRecipeImageDataLoaderTests {
     @Test func save_withSaveError_shouldNotAddAnyDataToCache() async throws {
         let (sut, store) = makeSUT()
         let url = try anyURL()
-        let data = try mockImageData()
+        let data = try mockUniqueImageData()
         
         let error = NSError(domain: "saveError", code: 0)
         store.stubInsertionResult(url: url, with: .failure(error))
@@ -93,7 +93,7 @@ struct LocalRecipeImageDataLoaderTests {
     @Test func save_withNoError_shouldAddAnyDataToCacheSuccessfully() async throws {
         let (sut, store) = makeSUT()
         let url = try anyURL()
-        let data = try mockImageData()
+        let data = try mockUniqueImageData()
         
         store.stubInsertionResult(url: url, with: .success(data))
         

@@ -18,7 +18,7 @@ struct SwiftDataRecipeImageDataStoreTests {
         let sut = try makeSUT()
         let url = try anyURL()
         try await addRecipe(to: sut, urlString: nil)
-        let imageData = try mockImageData()
+        let imageData = try mockUniqueImageData()
         
         await #expect(throws: SwiftDataStore.Error.urlNotFound) {
             try await sut.insert(imageData, for: url)
@@ -29,7 +29,7 @@ struct SwiftDataRecipeImageDataStoreTests {
         let sut = try makeSUT()
         let uniqueUrl = try makeUrl()
         try await addRecipe(to: sut, urlString: uniqueUrl.urlString)
-        let imageData = try mockImageData()
+        let imageData = try mockUniqueImageData()
         
         try await sut.insert(imageData, for: uniqueUrl.url)
         let retrievedData = try await sut.retrieveData(for: uniqueUrl.url)
@@ -41,8 +41,8 @@ struct SwiftDataRecipeImageDataStoreTests {
         let sut = try makeSUT()
         let uniqueUrl = try makeUrl()
         try await addRecipe(to: sut, urlString: uniqueUrl.urlString)
-        let originalImageData = try mockImageData()
-        let replacementImageData = try mockImageData()
+        let originalImageData = try mockUniqueImageData()
+        let replacementImageData = try mockUniqueImageData()
         
         try await sut.insert(originalImageData, for: uniqueUrl.url)
         try await sut.insert(replacementImageData, for: uniqueUrl.url)
@@ -57,7 +57,7 @@ struct SwiftDataRecipeImageDataStoreTests {
         let sut = try makeSUT()
         let uniqueUrl = try makeUrl()
         try await addMultipleUniqueRecipesWithSameImageURL(to: sut, urlString: uniqueUrl.urlString)
-        let imageData = try mockImageData()
+        let imageData = try mockUniqueImageData()
         
         await #expect(throws: SwiftDataStore.Error.duplicateUrl) {
             try await sut.insert(imageData, for: uniqueUrl.url)
@@ -67,7 +67,7 @@ struct SwiftDataRecipeImageDataStoreTests {
     @Test func retrieveData_withEmptyRecipeStore_shouldThrowUrlNotFoundError() async throws {
         let sut = try makeSUT()
         let url = try anyURL()
-        let imageData = try mockImageData()
+        let imageData = try mockUniqueImageData()
         
         await #expect(throws: SwiftDataStore.Error.urlNotFound) {
             try await sut.insert(imageData, for: url)
