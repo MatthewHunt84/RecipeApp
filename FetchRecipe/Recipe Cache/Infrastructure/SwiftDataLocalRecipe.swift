@@ -17,6 +17,7 @@ public class SwiftDataLocalRecipe {
     @Attribute(.unique) var uuid: String
     var sourceUrl: String?
     var youtubeUrl: String?
+    var photoUrlSmallImageData: Data?
     
     public init(cuisine: String,
          name: String,
