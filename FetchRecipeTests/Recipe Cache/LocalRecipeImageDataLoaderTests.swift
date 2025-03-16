@@ -9,35 +9,6 @@ import Testing
 import FetchRecipe
 import Foundation
 
-struct LocalRecipeImageDataLoader {
-    let store: RecipeImageDataStore
-    
-    enum Error: Swift.Error {
-        case failedToLoad
-        case failedToSave
-    }
-    
-    func loadImageData(for url: URL) async throws -> Data? {
-        do {
-            return try await store.retrieveData(for: url)
-        } catch {
-            throw Error.failedToLoad
-        }
-    }
-    
-    func save(_ data: Data, for url: URL) async throws {
-        do {
-            try await store.insert(data, for: url)
-        } catch {
-            throw Error.failedToSave
-        }
-    }
-}
-
-protocol RecipeImageDataStore {
-    func insert(_ data: Data, for url: URL) async throws
-    func retrieveData(for url: URL) async throws -> Data?
-}
 
 struct LocalRecipeImageDataLoaderTests {
 
