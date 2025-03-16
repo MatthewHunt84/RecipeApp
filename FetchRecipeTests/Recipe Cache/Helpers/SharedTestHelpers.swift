@@ -21,3 +21,7 @@ func makeUniqueLocalRecipe() -> LocalRecipe {
 func anyURL() throws -> URL {
     return try #require(URL(string: "http://any-url.com"))
 }
+
+func mockImageData() throws -> Data {
+    try #require(UUID().uuidString.data(using: .utf8))
+}

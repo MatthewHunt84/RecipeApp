@@ -113,10 +113,6 @@ struct LocalRecipeImageDataLoaderTests {
     }
     
     
-    private func mockImageData() throws -> Data {
-        try #require("IMAGE".data(using: .utf8))
-    }
-    
     private class RecipeImageDataStoreSpy: RecipeImageDataStore {
         var insertedImages: [Data?] = []
         var retrievedImages: [Data?] = []
