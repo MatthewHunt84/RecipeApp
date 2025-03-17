@@ -54,7 +54,7 @@ struct RecipeListPreviewHelper {
     }
     
     static func youtubeURL(at index: Int) -> String? {
-        let youtubeURLs = ["https://www.youtube.com/watch?v=6R8ffRRJcrg", "https://www.youtube.com/watch?v=4vhcOwVBDO4", "https://www.youtube.com/watch?v=rp8Slv4INLk", "https://www.youtube.com/watch?v=1ahpSTf_Pvk", "https://www.youtube.com/watch?v=kSKtb2Sv-_U", "https://www.youtube.com/watch?v=aB41Q7kDZQ0", "https://www.youtube.com/watch?v=2G07UOqU2e8", "https://www.youtube.com/watch?v=kniRGjDLFrQ", "https://www.youtube.com/watch?v=Vz5W1-BmOE4", "https://www.youtube.com/watch?v=6dzd6Ra6sb4", "https://www.youtube.com/watch?v=WUpaOGghOdo"]
+        let youtubeURLs = ["https://www.youtube.com/watch?v=6R8ffRRJcrg", nil, "https://www.youtube.com/watch?v=rp8Slv4INLk", "https://www.youtube.com/watch?v=1ahpSTf_Pvk", "https://www.youtube.com/watch?v=kSKtb2Sv-_U", "https://www.youtube.com/watch?v=aB41Q7kDZQ0", nil, "https://www.youtube.com/watch?v=kniRGjDLFrQ", "https://www.youtube.com/watch?v=Vz5W1-BmOE4", "https://www.youtube.com/watch?v=6dzd6Ra6sb4", "https://www.youtube.com/watch?v=WUpaOGghOdo"]
         return youtubeURLs[index]
     }
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RecipeListView: View {
-    @State var recipes: [Recipe]
+    @State var recipes: [Recipe] = []
     @State private var searchText = ""
     let getRecipes: () async -> [Recipe]
 
@@ -19,13 +19,17 @@ struct RecipeListView: View {
                     ForEach(searchResults) { recipe in
                         RecipeView(recipe: recipe)
                     }
+                    .listRowBackground(Color(.systemBackground).opacity(0.5))
                 }
+                .scrollContentBackground(.hidden)
+                .background(.blue.gradient)
                 .searchable(text: $searchText)
                 .refreshable {
                     recipes = await getRecipes()
                 }
             }
             .navigationTitle("Recipes")
+
 
         }
         .task {
@@ -45,9 +49,7 @@ struct RecipeListView: View {
 }
 
 #Preview {
-    RecipeListView(
-        recipes: [],
-        getRecipes: RecipeListPreviewHelper.getMockRecipes)
+    RecipeListView(getRecipes: RecipeListPreviewHelper.getMockRecipes)
 }
 
 
