@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Recipe: Codable, Equatable {
+public struct Recipe: Codable, Equatable, Identifiable {
     public let cuisine: String
     public let name: String
     public let photoUrlLarge: String?
