@@ -7,40 +7,6 @@
 
 import SwiftUI
 
-struct RecipeView: View {
-    let recipe: Recipe
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(recipe.name)
-                    .font(.headline)
-                
-                Text(recipe.cuisine)
-                    .italic()
-                
-                if let source = recipe.sourceUrl, let url = URL(string: source) {
-                    Link("Source", destination: url)
-                }
-            }
-            
-            Spacer()
-            
-            AsyncImage(url: URL(string: recipe.photoUrlSmall ?? ""), scale: 1) { phase in
-                switch phase {
-                case .empty:
-                    ProgressView()
-                case .success(let image):
-                    image.resizable()
-                default:
-                    EmptyView()
-                }
-            }
-            .frame(width: 128, height: 128)
-            .clipShape(RoundedRectangle(cornerRadius: 20))
-        }
-    }
-}
-
 struct RecipeListView: View {
     @State var recipes: [Recipe]
     @State private var searchText = ""
@@ -81,7 +47,7 @@ struct RecipeListView: View {
 #Preview {
     RecipeListView(
         recipes: [],
-        getRecipes: RecipeListPreviewHelper().getMockRecipes)
+        getRecipes: RecipeListPreviewHelper.getMockRecipes)
 }
 
 
