@@ -19,7 +19,7 @@ struct FetchRecipeApp: App {
             case .success(let recipeListView):
                 recipeListView
             case .failure(let error):
-                ErrorView(error: error, retryAction: compositionRoot.retryComposition)
+                CompositionErrorView(error: error, retryAction: compositionRoot.retryComposition)
             }
         }
     }
@@ -28,13 +28,13 @@ struct FetchRecipeApp: App {
 @Observable
 class CompositionRoot {
     
+    private static var urlString = "https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"
+    private(set) var compositionResult: Result<RecipeListView, Error>
+    
     enum CompositionError: Swift.Error {
         case badURL
         case badModelContainer
     }
-    
-    private static var urlString = "https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"
-    private(set) var compositionResult: Result<RecipeListView, Error>
     
     init() {
         self.compositionResult = Self.composeRecipeListView()
@@ -46,32 +46,41 @@ class CompositionRoot {
     
     static func composeRecipeListView() -> Result<RecipeListView, Error> {
         do {
-            let (localRecipeLoader, remoteRecipeLoader) = try getRecipeListViewDependencies()
+            let (localRecipeLoader, remoteRecipeLoader, localImageDataCache) = try getRecipeListViewDependencies()
             
-            func getRecipes() async -> [Recipe] {
-                do {
-                    let recipes = try await remoteRecipeLoader.load()
-                    try await localRecipeLoader.save(recipes)
-                    return recipes
-                } catch {
-                    // Handle errors
-                    return []
-                }
+            let viewModel = RecipeListView.ViewModel(
+                localRecipeLoader: localRecipeLoader,
+                remoteRecipeLoader: remoteRecipeLoader,
+                localImageDataCache: localImageDataCache
+            )
+            
+            func makeRecipeView(for recipe: Recipe) -> RecipeView {
+                RecipeView(
+                    recipe: recipe,
+                    cacheImageData: viewModel.cacheImage
+                )
             }
-            return .success(RecipeListView(errorMessage: nil, getRecipes: getRecipes))
+            
+            return .success(
+                RecipeListView(
+                    viewModel: viewModel,
+                    makeRecipeView: makeRecipeView
+                )
+            )
         } catch {
             return .failure(error)
         }
     }
     
-    static private func getRecipeListViewDependencies() throws -> (LocalRecipeLoader, RemoteRecipeLoader) {
+    static private func getRecipeListViewDependencies() throws -> (LocalRecipeLoader, RemoteRecipeLoader, LocalRecipeImageDataLoader) {
         let url = try createRecipeUrl()
         let modelContainer = try createModelContainer()
         let swiftDataStore = SwiftDataStore(modelContainer: modelContainer)
         let localRecipeLoader = LocalRecipeLoader(store: swiftDataStore)
         let remoteRecipeLoader = RemoteRecipeLoader(client: URLSessionHTTPClient(), url: url)
+        let localImageDataCache = LocalRecipeImageDataLoader(store: swiftDataStore)
         
-        return (localRecipeLoader, remoteRecipeLoader)
+        return (localRecipeLoader, remoteRecipeLoader, localImageDataCache)
     }
     
     static private func createModelContainer() throws -> ModelContainer {

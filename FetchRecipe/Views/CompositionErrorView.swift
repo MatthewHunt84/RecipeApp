@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ErrorView: View {
+struct CompositionErrorView: View {
     let error: Error
     let retryAction: () -> Void
     
@@ -41,13 +41,12 @@ struct ErrorView: View {
             }
             .padding()
         }
-        
     }
 }
 
 
 #Preview {
-    ErrorView(error: NSError(domain: "loadError", code: 0)) {
+    CompositionErrorView(error: NSError(domain: "loadError", code: 0)) {
         print("Retry")
     }
 }

@@ -20,7 +20,8 @@ struct RecipeListPreviewHelper {
                photoUrlSmall: photoURLSmall(at: index),
                id: uuid(at: index),
                sourceUrl: sourceURL(at: index),
-               youtubeUrl: youtubeURL(at: index))
+               youtubeUrl: youtubeURL(at: index),
+               photoUrlSmallImageData: nil)
     }
     
     static func cuisine(at index: Int) -> String {
@@ -56,5 +57,65 @@ struct RecipeListPreviewHelper {
     static func youtubeURL(at index: Int) -> String? {
         let youtubeURLs = ["https://www.youtube.com/watch?v=6R8ffRRJcrg", nil, "https://www.youtube.com/watch?v=rp8Slv4INLk", "https://www.youtube.com/watch?v=1ahpSTf_Pvk", "https://www.youtube.com/watch?v=kSKtb2Sv-_U", "https://www.youtube.com/watch?v=aB41Q7kDZQ0", nil, "https://www.youtube.com/watch?v=kniRGjDLFrQ", "https://www.youtube.com/watch?v=Vz5W1-BmOE4", "https://www.youtube.com/watch?v=6dzd6Ra6sb4", "https://www.youtube.com/watch?v=WUpaOGghOdo"]
         return youtubeURLs[index]
+    }
+    
+    static func cacheMockData(data: Data, url: URL) async -> Void {
+        return
+    }
+    
+    static func mockData() async -> Data {
+        "".data(using: .utf8)!
+    }
+    
+    static func mockRecipeViewFactory(for recipe: Recipe) -> RecipeView {
+        RecipeView(recipe: recipe, cacheImageData: cacheMockData)
+    }
+    
+    static func mockRecipeListViewModel() -> RecipeListView.ViewModel {
+        RecipeListView.ViewModel(localRecipeLoader: makeDummyLocalRecipeLoader(),
+                                 remoteRecipeLoader: makeDummyRemoteRecipeLoader(),
+                                 localImageDataCache: makeDummyLocalRecipeImageDataLoader())
+    }
+    
+    static func makeDummyLocalRecipeLoader() -> LocalRecipeLoader {
+        return LocalRecipeLoader(store: MockRecipeStore())
+    }
+    
+    static func makeDummyRemoteRecipeLoader() -> RemoteRecipeLoader {
+        return RemoteRecipeLoader(client: MockHTTPClient(), url: URL(string: "http://any-url.com")!)
+    }
+    
+    static func makeDummyLocalRecipeImageDataLoader() -> LocalRecipeImageDataLoader {
+        return LocalRecipeImageDataLoader(store: MockRecipeImageDataStore())
+    }
+    
+    static func makeDummyHTTPUrlResponse() -> HTTPURLResponse {
+        let dummyUrl = URL(string: "http://any-url.com")!
+        return HTTPURLResponse(url: dummyUrl, statusCode: 123, httpVersion: nil, headerFields: nil)!
+    }
+    
+    struct MockRecipeStore: RecipeStore {
+        func deleteCachedRecipes() async throws {}
+        func insertRecipes(_ recipes: [LocalRecipe]) async throws {}
+        func retrieveRecipes() async throws -> [LocalRecipe] {
+            await getMockRecipes().mapToLocalRecipe()
+        }
+    }
+    
+    struct MockRecipeImageDataStore: RecipeImageDataStore {
+        func insert(_ data: Data, for url: URL) async throws { }
+        
+        func retrieveData(for url: URL) async throws -> Data? {
+            return nil
+        }
+    }
+    
+    
+    struct MockHTTPClient: HTTPClient {
+        func data(from url: URL) async throws -> (Data, URLResponse) {
+            return ("".data(using: .utf8)!, makeDummyHTTPUrlResponse())
+        }
+        
+        
     }
 }

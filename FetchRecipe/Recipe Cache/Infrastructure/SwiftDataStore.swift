@@ -12,7 +12,7 @@ import SwiftData
 public actor SwiftDataStore: RecipeStore {
     
     public func retrieveRecipes() throws -> [LocalRecipe] {
-        let descriptor = FetchDescriptor<SwiftDataLocalRecipe>()
+        let descriptor = FetchDescriptor<SwiftDataLocalRecipe>(sortBy: [SortDescriptor(\SwiftDataLocalRecipe.name)])
         let swiftDataModels: [SwiftDataLocalRecipe] = try modelContext.fetch(descriptor)
         return swiftDataModels.map { $0.local }
     }
@@ -46,7 +46,7 @@ extension SwiftDataStore: RecipeImageDataStore {
         }
         let descriptor = FetchDescriptor<SwiftDataLocalRecipe>(predicate: predicate)
         let matchedRecipe = try modelContext.fetch(descriptor)
-        let recipes = try retrieveRecipes()
+
         guard matchedRecipe.count < 2 else {
             throw Error.duplicateUrl
         }
