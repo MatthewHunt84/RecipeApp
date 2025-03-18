@@ -11,8 +11,8 @@ import Observation
 typealias RecipeViewFactory = (Recipe) -> RecipeView
 
 struct RecipeListView: View {
+    @Environment(\.colorScheme) var colorScheme
     @State var viewModel: ViewModel
-    @State private var searchText = ""
     let makeRecipeView: RecipeViewFactory
     
     var body: some View {
@@ -20,14 +20,15 @@ struct RecipeListView: View {
         NavigationStack {
             VStack {
                 List {
-                    ForEach(searchResults) { recipe in
+                    ForEach(viewModel.filteredRecipes) { recipe in
                         makeRecipeView(recipe)
                     }
-                    .listRowBackground(Color(.systemBackground).opacity(0.5))
+                    .listRowBackground(viewModel.listBackground)
                 }
                 .scrollContentBackground(.hidden)
-                .background(.blue.gradient)
-                .searchable(text: $searchText)
+                .searchable(text: $viewModel.searchText)
+                .background(colorScheme == .dark ?
+                            viewModel.darkModePurpleBackground : viewModel.lightModeBlueBackground)
                 .refreshable {
                     await viewModel.getRecipes()
                 }
@@ -38,31 +39,38 @@ struct RecipeListView: View {
             await viewModel.getRecipes()
         }
     }
-    
-    var searchResults: [Recipe] {
-        if searchText.isEmpty {
-            return viewModel.recipes
-        } else {
-            return viewModel.recipes.filter { recipe in
-                recipe.name.contains(searchText)
-            }
-        }
-    }
 }
 
 extension RecipeListView {
     
     @Observable
     class ViewModel: ObservableObject {
-        var recipes: [Recipe] = []
+        
         private let localRecipeLoader: LocalRecipeLoader
         private let remoteRecipeLoader: RemoteRecipeLoader
         private let localImageDataCache: LocalRecipeImageDataLoader
+        
+        let darkModePurpleBackground = Color.purple.mix(with: .black, by: 0.55).gradient
+        let lightModeBlueBackground = Color.blue.gradient
+        let listBackground = Color(.systemBackground).opacity(0.65)
+        
+        var searchText: String = ""
+        var recipes: [Recipe] = []
         
         init(localRecipeLoader: LocalRecipeLoader, remoteRecipeLoader: RemoteRecipeLoader, localImageDataCache: LocalRecipeImageDataLoader) {
             self.localRecipeLoader = localRecipeLoader
             self.remoteRecipeLoader = remoteRecipeLoader
             self.localImageDataCache = localImageDataCache
+        }
+        
+        var filteredRecipes: [Recipe] {
+            if searchText.isEmpty {
+                return recipes
+            } else {
+                return recipes.filter { recipe in
+                    recipe.name.localizedStandardContains(searchText)
+                }
+            }
         }
         
         func getRecipes() async {
