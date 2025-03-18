@@ -10,12 +10,13 @@ import Testing
 
 func makeUniqueLocalRecipe() -> LocalRecipe {
     LocalRecipe(cuisine: "any",
-           name: "any",
-           photoUrlLarge: nil,
-           photoUrlSmall: nil,
-           uuid: UUID().uuidString,
-           sourceUrl: nil,
-           youtubeUrl: nil)
+                name: "any",
+                photoUrlLarge: nil,
+                photoUrlSmall: nil,
+                uuid: UUID().uuidString,
+                sourceUrl: nil,
+                youtubeUrl: nil,
+                photoUrlSmallImageData: nil)
 }
 
 func anyURL() throws -> URL {

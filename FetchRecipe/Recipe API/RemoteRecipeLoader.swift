@@ -42,7 +42,7 @@ public struct RemoteRecipeLoader: RecipeLoader {
 private extension Array where Element == RemoteRecipe {
     func mapToRemoteRecipes() -> [Recipe] {
         return map {
-            Recipe(cuisine: $0.cuisine, name: $0.name, photoUrlLarge: $0.photoUrlLarge, photoUrlSmall: $0.photoUrlSmall, id: $0.uuid, sourceUrl: $0.sourceUrl, youtubeUrl: $0.youtubeUrl)
+            Recipe(cuisine: $0.cuisine, name: $0.name, photoUrlLarge: $0.photoUrlLarge, photoUrlSmall: $0.photoUrlSmall, id: $0.uuid, sourceUrl: $0.sourceUrl, youtubeUrl: $0.youtubeUrl, photoUrlSmallImageData: nil)
         }
     }
 }

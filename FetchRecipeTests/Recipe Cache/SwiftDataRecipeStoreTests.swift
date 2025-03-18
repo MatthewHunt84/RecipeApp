@@ -97,7 +97,8 @@ struct SwiftDataRecipeStoreTests {
             photoUrlSmall: originalRecipe.photoUrlSmall,
             uuid: originalRecipe.uuid,
             sourceUrl: originalRecipe.sourceUrl,
-            youtubeUrl: originalRecipe.youtubeUrl)
+            youtubeUrl: originalRecipe.youtubeUrl,
+            photoUrlSmallImageData: nil)
         
         return [originalRecipe, duplicateRecipe]
     }

@@ -83,7 +83,8 @@ struct FetchRecipeAPIEndToEndTests {
                photoUrlSmall: photoURLSmall(at: index),
                id: uuid(at: index),
                sourceUrl: sourceURL(at: index),
-               youtubeUrl: youtubeURL(at: index))
+               youtubeUrl: youtubeURL(at: index),
+               photoUrlSmallImageData: nil)
     }
     
     func cuisine(at index: Int) -> String {

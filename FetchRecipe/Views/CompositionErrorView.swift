@@ -46,7 +46,7 @@ struct CompositionErrorView: View {
 
 
 #Preview {
-    CompositionErrorView(error: NSError(domain: "loadError", code: 0)) {
+    CompositionErrorView(error: NSError(domain: "Failed to do something important -", code: 0)) {
         print("Retry")
     }
 }

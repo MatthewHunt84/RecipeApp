@@ -15,8 +15,9 @@ public struct Recipe: Codable, Equatable, Identifiable {
     public let id: String
     public let sourceUrl: String?
     public let youtubeUrl: String?
+    public let photoUrlSmallImageData: Data?
     
-    public init(cuisine: String, name: String, photoUrlLarge: String?, photoUrlSmall: String?, id: String, sourceUrl: String?, youtubeUrl: String?) {
+    public init(cuisine: String, name: String, photoUrlLarge: String?, photoUrlSmall: String?, id: String, sourceUrl: String?, youtubeUrl: String?, photoUrlSmallImageData: Data?) {
         self.cuisine = cuisine
         self.name = name
         self.photoUrlLarge = photoUrlLarge
@@ -24,6 +25,7 @@ public struct Recipe: Codable, Equatable, Identifiable {
         self.id = id
         self.sourceUrl = sourceUrl
         self.youtubeUrl = youtubeUrl
+        self.photoUrlSmallImageData = photoUrlSmallImageData
     }
 }
 

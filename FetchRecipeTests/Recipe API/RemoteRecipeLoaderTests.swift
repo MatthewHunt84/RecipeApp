@@ -175,7 +175,8 @@ struct RemoteRecipeLoaderTests {
                             photoUrlSmall: photoUrlSmall,
                             id: uuid,
                             sourceUrl: sourceUrl,
-                            youtubeUrl: youtubeUrl)
+                            youtubeUrl: youtubeUrl,
+                            photoUrlSmallImageData: nil)
         
         return (recipe: recipe, json: json)
     }

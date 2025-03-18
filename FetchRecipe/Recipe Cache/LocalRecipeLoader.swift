@@ -36,7 +36,8 @@ extension Array where Element == Recipe {
             photoUrlSmall: $0.photoUrlSmall,
             uuid: $0.id,
             sourceUrl: $0.sourceUrl,
-            youtubeUrl: $0.youtubeUrl)
+            youtubeUrl: $0.youtubeUrl,
+            photoUrlSmallImageData: $0.photoUrlSmallImageData)
         }
     }
 }
@@ -50,7 +51,8 @@ extension Array where Element == LocalRecipe {
             photoUrlSmall: $0.photoUrlSmall,
             id: $0.uuid,
             sourceUrl: $0.sourceUrl,
-            youtubeUrl: $0.youtubeUrl)
+            youtubeUrl: $0.youtubeUrl,
+            photoUrlSmallImageData: $0.photoUrlSmallImageData)
         }
     }
 }

@@ -112,7 +112,8 @@ struct LocalRecipeLoaderTests {
             photoUrlSmall: $0.photoUrlSmall,
             uuid: $0.id,
             sourceUrl: $0.sourceUrl,
-            youtubeUrl: $0.youtubeUrl)
+            youtubeUrl: $0.youtubeUrl,
+            photoUrlSmallImageData: nil)
         }
         return (models, local)
     }
@@ -124,7 +125,8 @@ struct LocalRecipeLoaderTests {
                photoUrlSmall: nil,
                id: UUID().uuidString,
                sourceUrl: nil,
-               youtubeUrl: nil)
+               youtubeUrl: nil,
+               photoUrlSmallImageData: nil)
     }
     
     final class RecipeStoreSpy: RecipeStore {

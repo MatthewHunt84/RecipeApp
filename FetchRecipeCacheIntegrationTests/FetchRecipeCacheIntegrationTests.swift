@@ -104,7 +104,8 @@ struct FetchRecipeCacheIntegrationTests {
             photoUrlSmall: nil,
             id: UUID().uuidString,
             sourceUrl: nil,
-            youtubeUrl: nil)
+            youtubeUrl: nil,
+            photoUrlSmallImageData: nil)
     }
     
     private func makeRecipe(for url: String?) -> Recipe {
@@ -115,7 +116,8 @@ struct FetchRecipeCacheIntegrationTests {
             photoUrlSmall: url,
             id: UUID().uuidString,
             sourceUrl: nil,
-            youtubeUrl: nil)
+            youtubeUrl: nil,
+            photoUrlSmallImageData: nil)
     }
 
     private func makeRecipes() -> [Recipe] {

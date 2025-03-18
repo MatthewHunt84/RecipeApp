@@ -110,7 +110,8 @@ public class SwiftDataLocalRecipe {
             photoUrlSmall: photoUrlSmall,
             uuid: uuid,
             sourceUrl: sourceUrl,
-            youtubeUrl: youtubeUrl)
+            youtubeUrl: youtubeUrl,
+            photoUrlSmallImageData: photoUrlSmallImageData)
     }
     
     public init(_ localRecipe: LocalRecipe) {
@@ -121,5 +122,6 @@ public class SwiftDataLocalRecipe {
         self.uuid = localRecipe.uuid
         self.sourceUrl = localRecipe.sourceUrl
         self.youtubeUrl = localRecipe.youtubeUrl
+        self.photoUrlSmallImageData = localRecipe.photoUrlSmallImageData
     }
 }

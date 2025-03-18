@@ -124,7 +124,8 @@ struct SwiftDataRecipeImageDataStoreTests {
             photoUrlSmall: url,
             uuid: UUID().uuidString,
             sourceUrl: nil,
-            youtubeUrl: nil)
+            youtubeUrl: nil,
+            photoUrlSmallImageData: nil)
     }
     
     private func makeUrl() throws -> (url: URL, urlString: String) {
