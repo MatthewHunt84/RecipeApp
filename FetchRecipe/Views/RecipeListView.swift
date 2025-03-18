@@ -14,7 +14,7 @@ struct RecipeListView: View {
     @State var viewModel: ViewModel
     @State private var searchText = ""
     let makeRecipeView: RecipeViewFactory
-
+    
     var body: some View {
         
         NavigationStack {
@@ -51,7 +51,7 @@ struct RecipeListView: View {
 }
 
 extension RecipeListView {
-
+    
     @Observable
     class ViewModel: ObservableObject {
         var recipes: [Recipe] = []
@@ -78,13 +78,13 @@ extension RecipeListView {
                 }
             }
         }
-
+        
         func cacheImage(data: Data, url: URL) async {
+            try? await localImageDataCache.save(data, for: url)
             do {
-                try await localImageDataCache.save(data, for: url)
                 self.recipes = try await localRecipeLoader.load()
             } catch {
-                // Handle save image to cache errors
+                self.recipes = []
             }
         }
     }
